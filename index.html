@@ -1,0 +1,1191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CO Annual Requirements</title>
+</head>
+<body>
+<style>
+/* Layout: top bar with save status; start screen card; form = section rail + question cards with traffic-light boxes */
+:root{
+  /* NPA visual identity, as in the Annual Operational Planning Tool: NPA green header, light grey-green ground, Arial */
+  --bg:#F3F4F2; --surface:#FFFFFF; --surface-2:#F6F7F5; --line:#DCDDDA; --fg:#1A1A1A; --muted:#5E5E5E;
+  --accent:#007745; --accent-hover:#006C36; --accent-bright:#009933; --accent-fg:#FFFFFF; --accent-soft:#E3F2E8;
+  --red:#E2001A; --red-soft:#FDE6E8; --amber:#F2A900; --amber-soft:#FDF1D3; --green:#007745; --green-soft:#E3F2E8;
+  --na:#8E918B; --na-soft:#EDEEEC; --empty:#E6E7E4; --amber-fg:#2B2100; --on-solid:#FFFFFF;
+  --f-body:Arial,Helvetica,sans-serif;
+  --f-mono:ui-monospace,Menlo,Consolas,"Courier New",monospace;
+  --r:10px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5}
+h1,h2,h3{margin:0;text-wrap:balance;line-height:1.25}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--accent)}a:hover{color:var(--accent-hover)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--f-mono);font-size:.82em}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--accent);color:var(--accent-fg);border-bottom:4px solid var(--accent-bright)}
+.npa{font-weight:700;font-size:15px;line-height:1.1;white-space:nowrap}
+.npa-div{width:1px;align-self:stretch;background:#7FB89B;min-height:36px}
+.top-in{max-width:1320px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;margin-right:auto;min-width:0}
+.brand b{font-size:1.02rem}
+.brand span{font-size:.78rem;opacity:.85}
+.savest{display:flex;align-items:center;gap:7px;font-size:.82rem;background:rgba(0,0,0,.18);padding:5px 11px;border-radius:99px;white-space:nowrap}
+.savest i{width:9px;height:9px;border-radius:50%;background:#7fd48f;display:inline-block}
+.savest[data-s="saving"] i{background:#f3d36b}
+.savest[data-s="offline"] i,.savest[data-s="error"] i{background:#ff8a80}
+.who{font-size:.8rem;opacity:.9;white-space:nowrap}
+.linkbtn{background:none;border:0;color:inherit;text-decoration:underline;cursor:pointer;font-size:.8rem;padding:0}
+.demo-chip{font-size:.72rem;border:1px solid currentColor;border-radius:99px;padding:2px 8px;white-space:nowrap}
+
+.wrap{max-width:1320px;margin:0 auto;padding-inline:16px;padding-block:20px 60px}
+.card{background:var(--surface);border:1px solid var(--line);border-top:6px solid var(--accent);border-radius:var(--r);padding:24px;max-width:680px;margin:24px auto;display:grid;gap:16px}
+.card h1{font-size:1.4rem}
+.card p{margin:0;color:var(--muted)}
+.grid3{display:grid;grid-template-columns:2fr 1fr 1.4fr;gap:12px}
+.fld{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fld label{font-size:.78rem;font-weight:600;color:var(--muted)}
+.fld input,.fld select,.fld textarea{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;min-width:0}
+.fld textarea{min-height:70px;resize:vertical}
+.fld input:disabled,.fld select:disabled{background:var(--surface-2)}
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 16px;border-radius:6px;cursor:pointer;font-weight:600}
+.btn.pri{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.btn.danger{background:var(--red);border-color:var(--red);color:var(--on-solid)}
+.btn:disabled{opacity:.45;cursor:default}
+.note{font-size:.86rem;border-radius:6px;padding:10px 14px;background:var(--accent-soft)}
+.note.warn{background:var(--amber-soft)}
+.note.err{background:var(--red-soft)}
+.note.ok{background:var(--green-soft)}
+
+.form-grid{display:grid;grid-template-columns:280px minmax(0,1fr);gap:20px;align-items:start}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:8px;max-height:calc(100vh - 100px);overflow:auto}
+.rail h3{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:8px 10px 6px}
+.rail button{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 8px;width:100%;text-align:left;border:0;background:transparent;padding:8px 10px;border-radius:6px;cursor:pointer}
+.rail button:hover{background:var(--surface-2)}
+.rail button[aria-current="true"]{background:var(--accent-soft)}
+.rail .nm{font-size:.85rem;font-weight:500;min-width:0}
+.rail .ct{font-size:.74rem;color:var(--muted);font-variant-numeric:tabular-nums;align-self:center}
+.minibar,.stack{display:flex;border-radius:2px;overflow:hidden;background:var(--empty)}
+.minibar{grid-column:1/-1;height:4px}
+.stack{height:12px;border-radius:3px}
+.minibar i,.stack i{display:block;height:100%}
+.rail-sel.fld{display:none}
+
+.hero{background:var(--surface);border:1px solid var(--line);border-top:6px solid var(--accent);border-radius:var(--r);padding:18px 22px;display:grid;gap:12px}
+.hero-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:start}
+.hero h1{font-size:1.35rem}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.82rem}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:12px;height:12px;border-radius:50%;display:inline-block;flex:none}
+.progress{display:flex;align-items:center;gap:12px;font-size:.84rem;color:var(--muted)}
+.progress .bar{flex:1;height:8px;background:var(--empty);border-radius:4px;overflow:hidden}
+.progress .bar i{display:block;height:100%;background:var(--accent);transition:width .25s}
+
+.sec-head{margin:24px 0 12px;display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.sec-head h2{font-size:1.25rem}
+.edited{font-size:.8rem;color:var(--muted)}
+.sub-h{margin:22px 0 8px;font-size:.9rem;font-weight:700;color:var(--accent)}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:grid;gap:10px;margin-bottom:10px;border-left:5px solid var(--line)}
+.q[data-s="1"]{border-left-color:var(--red)}
+.q[data-s="2"]{border-left-color:var(--amber)}
+.q[data-s="3"]{border-left-color:var(--green)}
+.q[data-s="na"]{border-left-color:var(--na)}
+.q-top{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.q-id{color:var(--muted);flex:none}
+.q-text{font-weight:600;max-width:80ch;flex:1;min-width:0}
+.prev{font-size:.74rem;color:var(--muted);white-space:nowrap}
+.hint{font-size:.84rem;color:var(--muted)}
+.docs{display:flex;flex-wrap:wrap;gap:6px}
+.doc{font-size:.78rem;display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line);text-decoration:none;color:var(--fg);max-width:100%}
+a.doc:hover{border-color:var(--accent);color:var(--accent)}
+.doc.gap{background:transparent;border-style:dashed;color:var(--muted)}
+.doc span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(70px,auto);gap:8px}
+.ch{border:1.5px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 10px;cursor:pointer;display:flex;align-items:center;gap:9px;text-align:left;min-width:0}
+.ch b{font-size:1rem;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--surface-2)}
+.ch small{font-size:.82rem;line-height:1.2}
+.ch:hover:not(:disabled){border-color:var(--muted)}
+.ch:disabled{cursor:default}
+.ch[data-v="1"][aria-pressed="true"]{border-color:var(--red);background:var(--red);color:var(--on-solid)}
+.ch[data-v="2"][aria-pressed="true"]{border-color:var(--amber);background:var(--amber);color:var(--amber-fg)}
+.ch[data-v="3"][aria-pressed="true"]{border-color:var(--green);background:var(--green);color:var(--on-solid)}
+.ch[aria-pressed="true"] b{background:rgba(255,255,255,.28)}
+.ch[data-v="na"]{justify-content:center}
+.ch[data-v="na"][aria-pressed="true"]{border-color:var(--na);background:var(--na);color:var(--on-solid)}
+.follow{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1.6fr) minmax(0,1.1fr) minmax(0,.9fr);gap:10px;background:var(--surface-2);border-radius:6px;padding:10px 12px}
+.follow.one{grid-template-columns:minmax(0,1fr)}
+.req{color:var(--red)}
+.nav-btns{display:flex;justify-content:space-between;gap:10px;margin-top:18px;flex-wrap:wrap}
+
+.review{display:grid;gap:8px}
+.rv-row{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,2fr) 110px;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 14px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:.74rem;font-weight:600;padding:2px 9px;border-radius:99px;white-space:nowrap}
+.pill.r{background:var(--red-soft);color:var(--red)}
+.pill.a{background:var(--amber-soft);color:var(--amber)}
+.pill.g{background:var(--green-soft);color:var(--green)}
+.pill.n{background:var(--na-soft);color:var(--muted)}
+.jump{background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer;font-family:var(--f-mono);font-size:.8rem}
+.confirm{display:grid;gap:10px;border:2px solid var(--accent);border-radius:8px;padding:14px;background:var(--surface)}
+.demo-bar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:.8rem;background:var(--surface);border:1px dashed var(--line);border-radius:6px;padding:8px 12px;margin-bottom:14px;color:var(--muted)}
+.demo-bar label{display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:8px;font-size:.88rem;z-index:50;max-width:calc(100% - 32px)}
+
+
+/* tabs + dashboard */
+.vtabs{display:flex;gap:4px;background:rgba(0,0,0,.18);padding:3px;border-radius:8px}
+.vtabs button{border:0;background:transparent;color:inherit;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:600;font-size:.85rem}
+.vtabs button[aria-selected="true"]{background:var(--accent-fg);color:var(--accent)}
+.dash-head{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.dash-head h1{font-size:1.4rem}
+.filters{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin-bottom:16px}
+.filters .fld{min-width:200px}
+.seg{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;padding:8px 14px;font-size:.86rem;cursor:pointer;font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:4px;align-content:start}
+.kpi .v{font-size:1.75rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi .v small{font-size:1rem;color:var(--muted);font-weight:500}
+.kpi .l{font-size:.8rem;color:var(--muted)}
+.kpi .s{font-size:.78rem;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pill.x{background:var(--na-soft);color:var(--muted)}
+.delta{font-weight:700;font-size:.78rem;color:var(--muted);white-space:nowrap}
+.delta.up{color:var(--green)} .delta.down{color:var(--red)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;min-width:0}
+.panel h2{font-size:1rem;margin-bottom:2px}
+.panel .sub{font-size:.8rem;color:var(--muted);margin:0 0 12px}
+.panel-head{display:flex;justify-content:space-between;align-items:start;gap:12px;flex-wrap:wrap}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.hm-scroll{overflow-x:auto}
+table.hm{border-collapse:separate;border-spacing:3px;font-size:.8rem;width:100%}
+table.hm:not(.tr){min-width:940px}
+.hm th{font-weight:600;color:var(--muted);font-size:.7rem;text-align:center;vertical-align:bottom;padding:2px}
+.hm th.cn{text-align:left}
+.hm th .full{display:block;font-weight:400;font-size:.64rem;line-height:1.15;max-width:62px;margin:0 auto}
+.hm td{height:30px;text-align:center;border-radius:4px;font-variant-numeric:tabular-nums;font-weight:600;min-width:40px}
+.hm td.cname{text-align:left;font-weight:500;white-space:nowrap;padding:0 8px;min-width:170px}
+.hm tr[data-c]{cursor:pointer}
+.hm tr[data-c]:hover td.cname{color:var(--accent)}
+.hm td.ov{box-shadow:inset 0 0 0 2px var(--fg)}
+.hm td.chg{font-weight:400}
+.st{font-size:.68rem;font-weight:600;margin-left:6px;color:var(--muted)}
+.c-r{background:var(--red);color:var(--on-solid)} .c-a{background:var(--amber);color:var(--amber-fg)} .c-g{background:var(--green);color:var(--on-solid)} .c-x{background:var(--empty);color:var(--muted);font-weight:400}
+.donut{display:block;flex:none;overflow:visible}
+.donut circle[data-tip]{cursor:default}
+.dn-c{font-weight:700;fill:var(--fg);font-variant-numeric:tabular-nums}
+.dn-s{fill:var(--muted)}
+.dn-big{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.dn-tab{border-collapse:collapse;font-size:.86rem}
+.dn-tab td{padding:4px 8px;border-bottom:1px solid var(--line)}
+.dn-tab td:first-child{display:flex;align-items:center;gap:8px}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.att-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.att-tab{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 12px;font-size:.82rem;font-weight:600;cursor:pointer}
+.att-tab b{font-variant-numeric:tabular-nums}
+.att-tab.r[aria-selected="true"]{border-color:var(--red);background:var(--red-soft);color:var(--red)}
+.att-tab.a[aria-selected="true"]{border-color:var(--amber);background:var(--amber-soft);color:var(--fg)}
+.att-list{max-height:340px;overflow:auto;display:grid;gap:12px;padding-right:4px}
+.att-h{font-size:.78rem;font-weight:700;color:var(--accent);margin-bottom:4px}
+.att{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:.86rem}
+.att li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;padding:6px 10px;border-radius:6px;border-left:4px solid var(--line)}
+.att li.att-r{border-left-color:var(--red);background:var(--red-soft)}
+.att li.att-a{border-left-color:var(--amber);background:var(--amber-soft)}
+.sec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.sec-card{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px}
+.sc-t{display:grid;gap:3px;font-size:.78rem;min-width:0}
+.sc-t b{font-size:.84rem}
+.lc{width:100%;height:auto;display:block}
+.lc .grid{stroke:var(--line);stroke-width:1}
+.lc .ax{fill:var(--muted);font-size:12px}
+.lc .lbl{fill:var(--fg);font-size:13px;font-weight:700}
+.kv3{display:flex;gap:14px}
+.hb{display:grid;gap:5px}
+.hb-row{display:grid;grid-template-columns:minmax(0,150px) minmax(0,1fr) auto;gap:10px;align-items:center;font-size:.8rem}
+.hb-row[data-c2]{cursor:pointer}
+.hb-row[data-c2]:hover .hb-l{color:var(--accent)}
+.hb-row.rqrow{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto}
+.hb-l{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hb-bar{display:flex;gap:2px;height:14px;border-radius:3px;overflow:hidden;background:var(--empty)}
+.hb-bar i{display:block;height:100%}
+.hb-v{display:flex;gap:6px;align-items:center;justify-content:flex-end;min-width:110px}
+.hb-v .pill{min-width:44px;justify-content:center}
+.tag{font-size:.66rem;font-weight:700;padding:1px 6px;border-radius:4px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.steps{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.step{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.step .t{font-weight:600;font-size:.88rem}
+.step .d{font-size:.8rem;color:var(--muted);margin-top:2px}
+.step .act{font-size:.78rem;margin-top:4px;color:var(--accent);font-weight:600}
+.pr{font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 7px;border-radius:4px;height:fit-content;white-space:nowrap}
+.pr.h{background:var(--red);color:var(--on-solid)} .pr.m{background:var(--amber);color:var(--amber-fg)} .pr.l{background:var(--green-soft);color:var(--green)}
+table.mx{border-collapse:separate;border-spacing:2px;font-size:.76rem}
+.mx th{font-weight:600;color:var(--muted);vertical-align:bottom;padding:2px}
+.mx th.vt{height:130px;width:26px}
+.mx th.vt span{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;display:inline-block}
+.mx th[data-c2]{cursor:pointer}
+.mx th[data-c2]:hover{color:var(--accent)}
+.mx td{width:26px;height:24px;text-align:center;border-radius:3px;font-weight:700;font-variant-numeric:tabular-nums}
+.mx td.rq,.mx th.rq{text-align:left;width:auto;min-width:260px;max-width:340px;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px}
+.mx td.cnt{font-weight:400;color:var(--muted);white-space:nowrap;padding:0 6px}
+.c-n{background:var(--na);color:var(--on-solid)}
+.tip{position:fixed;z-index:60;pointer-events:none;background:var(--fg);color:var(--bg);font-size:.8rem;padding:6px 10px;border-radius:6px;max-width:320px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+@media (max-width:980px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:620px){.hb-row,.hb-row.rqrow{grid-template-columns:minmax(0,1fr) auto}.hb-row .hb-bar{grid-column:1/-1;order:3}.vtabs button{padding:6px 8px;font-size:.78rem}.filters{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.filters .seg{grid-column:1/-1}.filters .fld{min-width:0}.seg button{flex:1;padding:8px 6px}.kpis{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@media (max-width:980px){
+  .form-grid{grid-template-columns:minmax(0,1fr)}
+  .rail{display:none}
+  .rail-sel.fld{display:flex;margin-top:14px}
+  .follow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+}
+@media (max-width:620px){
+  .grid3{grid-template-columns:minmax(0,1fr)}
+  .choices{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .choices .ch[data-v="na"]{grid-column:1/-1}
+  .ch{flex-direction:column;text-align:center;gap:4px;padding:8px 4px}
+  .ch small{font-size:.72rem}
+  .follow{grid-template-columns:minmax(0,1fr)}
+  .rv-row{grid-template-columns:minmax(0,1fr) auto}
+  .rv-row .stack{grid-column:1/-1;order:3}
+  .brand span,.who,.npa-div{display:none}
+  .npa{font-size:12px}
+  .card{padding:18px}
+}
+/* deliverables */
+.dl-sum{display:flex;gap:18px;flex-wrap:wrap;align-items:center;font-size:.9rem}
+.dl-sum .v{font-size:1.3rem;font-variant-numeric:tabular-nums;margin-right:2px}
+.dl-sec{font-size:1.05rem;margin:22px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--accent)}
+.q.dl{min-width:0}.q.dl>*{min-width:0}
+.dl .doc{min-width:0}
+.dl-ch{grid-template-columns:repeat(3,minmax(0,1fr))}
+.dl-ch .ch{justify-content:center}
+.dl-f{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+.lk{display:flex;gap:6px}.lk input{flex:1;min-width:0}.lk .btn{padding:6px 12px;white-space:nowrap}
+.doc.over{border-color:var(--red);color:var(--red);font-weight:700}
+.mx th.grp{font-size:.7rem;text-align:left;border-left:2px solid var(--line);padding-left:4px;white-space:nowrap;vertical-align:bottom}
+.mx td.ovd{outline:2px solid var(--red);outline-offset:-2px}
+.mx td.c-x.ovd{background:var(--surface)}
+.mx td a{color:inherit;text-decoration:none;display:block}
+.dlx td.rq{min-width:170px}
+@media (max-width:720px){.dl-f{grid-template-columns:minmax(0,1fr)}.dl-ch{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="npa">Norwegian<br>People's Aid</div><span class="npa-div" aria-hidden="true"></span>
+    <div class="brand"><b>Country Office Annual Requirements</b><span id="brand-sub">Annual self-assessment</span></div>
+    <nav class="vtabs" role="tablist"><button role="tab" id="tab-form" aria-selected="true">Requirements Checklist</button><button role="tab" id="tab-dlv" aria-selected="false">Deliverables</button><button role="tab" id="tab-dash" aria-selected="false">Dashboards</button></nav>
+    <span class="savest" id="savest" data-s="saved" hidden><i></i><span id="savest-t">All changes saved</span></span>
+    <span class="who" id="who"></span>
+    <span class="demo-chip" id="demo-chip" hidden>Demo mode</span>
+  </div>
+</header>
+<main class="wrap" id="app"></main>
+<div class="toast" id="toast" hidden></div>
+<div class="tip" id="tip" hidden></div>
+
+<script>window.COAR_EXPECT_CONFIG = true; document.write('<script src="config.js?t=' + Date.now() + '" onerror="window.COAR_CONFIG_MISSING = true"><\/script>');</script>
+<script>
+/* ================= CONFIGURATION =================
+   The settings live in a separate file, config.js, next to this page (see the setup guide).
+   Without config.js, or with LAYER_URL empty, the form runs in demo mode (data stays in this browser). */
+const CONFIG = Object.assign({
+  PORTAL_URL: "https://www.arcgis.com",
+  CLIENT_ID: "",
+  LAYER_URL: "",
+  COUNTRY_LAYER_URLS: {},
+  DEFAULT_YEAR: "2027",
+  SUBMIT_ROLES: ["country_director"]
+}, window.COAR_CONFIG || {});
+CONFIG.PORTAL_URL = String(CONFIG.PORTAL_URL).replace(/\/+$/, "");
+// Sign-in return address: the page's folder address, so ".../coar-form/" and ".../coar-form/index.html" both work.
+CONFIG.REDIRECT_URI = CONFIG.REDIRECT_URI || (location.origin + location.pathname.replace(/index\.html$/, ""));
+/* ================================================= */
+
+const DATA = {"sections":[{"code":"SMS","num":1,"name":"Staff and Management Support","respondent":"Country Director"},{"code":"INT","num":2,"name":"International Department","respondent":"Country Director"},{"code":"DON","num":3,"name":"Donor and Grant management","respondent":"Country Director"},{"code":"COM","num":4,"name":"Communications and Marketing","respondent":"Country Director"},{"code":"PAR","num":5,"name":"Partner management","respondent":"Country Director"},{"code":"ACO","num":6,"name":"Anti corruption work","respondent":"Country Director"},{"code":"ICT","num":7,"name":"Information Technology","respondent":"IT Officer / Country Director"},{"code":"SEC","num":8,"name":"Security","respondent":"Security Focal Point"},{"code":"CMP","num":9,"name":"Compliance","respondent":"Country Director"},{"code":"CRS","num":10,"name":"Cross cutting","respondent":"Country Director"},{"code":"SFG","num":11,"name":"Safeguarding","respondent":"Safeguarding Focal Point"},{"code":"CFM","num":12,"name":"CFM","respondent":"Safeguarding Focal Point"},{"code":"LOG","num":13,"name":"Logistics","respondent":"Logistics Manager"},{"code":"HSE","num":14,"name":"HSE","respondent":"Country Director"},{"code":"HR","num":15,"name":"Human Resources","respondent":"HR Manager"},{"code":"FIN","num":16,"name":"Finance","respondent":"Finance Manager"}],"items":[{"id":"SMS_01","code":"SMS","sub":null,"q":"Registration and reporting as a NGO/legal entity. Provide links","links":[],"gov":"Country Office Handbook (to be developed)","nogov":true,"hint":"","coNote":""},{"id":"SMS_02","code":"SMS","sub":null,"q":"Do you have a retainer arrangement with a local lawyer?","links":[],"gov":"Country Office Handbook (to be developed)","nogov":true,"hint":"","coNote":""},{"id":"SMS_03","code":"SMS","sub":null,"q":"Does the Country Director have a Power of Attorney issued by Head Office? Provide link.","links":[],"gov":"Country Office Handbook (to be developed)","nogov":true,"hint":"","coNote":""},{"id":"SMS_04","code":"SMS","sub":null,"q":"Are all MoUs in place with the relevant authorities? Provide links.","links":[],"gov":"Country Office Handbook (to be developed)","nogov":true,"hint":"","coNote":""},{"id":"SMS_05","code":"SMS","sub":null,"q":"Do you have accreditation for mine action operations. Provide links","links":[["Standard (cat 3): International Mine Action Standard 07.30/01","https://www.mineactionstandards.org/standards/07-30-01/"]],"gov":"Standard (cat 3): International Mine Action Standard 07.30/01","nogov":false,"hint":"","coNote":""},{"id":"INT_01","code":"INT","sub":null,"q":"Does your organisation structure comply with the country office standard set up?","links":[["Policy (cat 2): Country Office Design Policy","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQDBDrC4bPZlTKKKnXNVKjnZAcJPh29XImvJ3UGKKH1zTns?e=HUzxpx&or=PPT-WEB.BODY.NT&ct=1790585292708"],["Visual (cat 4): Standard-set up VIsual","https://npaid.sharepoint.com/:p:/s/KeyDocumentsinNPA/IQDu9YnVORxrQZMFPRGlxhiMAW-aV3DVFicGLsGEuWY8vhk?e=TPuhee"]],"gov":"Policy (cat 2): Country Office Design Policy Visual (cat 4): Standard-set up Visual","nogov":false,"hint":"on SP?","coNote":""},{"id":"INT_02","code":"INT","sub":null,"q":"Do you have regular Senior Management Team (SMT) meetings?","links":[["Policy (cat 2): Country office SMT standard ToR","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQCHa10bcpYjRKYi2oRfZwBDAb2BpqgYV8Zmy9u0SW0jvcw?e=jKVeNA&or=WORD-WEB.BODY.NT&ct=1789035895876&CID=20A43AEB-9844-49E1-BA27-8DA742C8E43A"]],"gov":"Policy (cat 2): Country office SMT standard ToR","nogov":false,"hint":"how often?","coNote":""},{"id":"INT_03","code":"INT","sub":null,"q":"Are written minutes from these meetings circulated and stored appropriately?","links":[["Policy (cat 2): Country office SMT standard ToR","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQCHa10bcpYjRKYi2oRfZwBDAb2BpqgYV8Zmy9u0SW0jvcw?e=jKVeNA&or=WORD-WEB.BODY.NT&ct=1789035895876&CID=20A43AEB-9844-49E1-BA27-8DA742C8E43A"]],"gov":"Policy (cat 2): Country office SMT standard ToR","nogov":false,"hint":"","coNote":""},{"id":"INT_04","code":"INT","sub":null,"q":"Do you respond to and implement recommendations in HO trip reports?","links":[],"gov":"Country Office Handbook (to be developed)","nogov":true,"hint":"","coNote":""},{"id":"INT_05","code":"INT","sub":null,"q":"Is your master action task list update and followed up?","links":[],"gov":"Country Office Handbook (to be developed)","nogov":true,"hint":"","coNote":""},{"id":"INT_06","code":"INT","sub":null,"q":"Is the risk management matrix being actively used in programme and project management, and for developing donor proposals?","links":[["Policy (cat 2): Risk Management Policy","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQBB5Weeu5nnRqlswyAQhnwCAS6ip9V2wsEBPieAMVE713g?e=Rx965Z"],["Add CO Risk Management Matrix document","https://npaid.sharepoint.com/sites/HO-FIN-RiskManagement/RiskAssessments/Forms/AllItems.aspx?id=%2Fsites%2FHO%2DFIN%2DRiskManagement%2FRiskAssessments%2FCountry%20Office&viewid=b0c55a8f%2D7eee%2D4295%2D9f48%2D9ff5cb1d1c62"]],"gov":"Policy (cat 2): Risk Management Policy FILL IN: CO Risk Management Matrix","nogov":false,"hint":"","coNote":"Upload CO risk management matrix to library:"},{"id":"INT_07","code":"INT","sub":null,"q":"Has at least one employee representative been elected by the national staff?","links":[["Handbook (cat 3) - 4.1 Election of employee representative(s)","https://cp.compendia.no/norsk-folkehjelp/expat-handbook/1217748"]],"gov":"Handbook (cat 3) - 4.1 Election of employee representative(s)","nogov":false,"hint":"","coNote":""},{"id":"DON_01","code":"DON","sub":null,"q":"Is the fundraising plan being implemented?","links":[],"gov":"To be developed","nogov":true,"hint":"","coNote":""},{"id":"DON_02","code":"DON","sub":null,"q":"Do you have regular meetings with local donors? Provide link to donor engagement tracker.","links":[],"gov":"To be developed","nogov":true,"hint":"","coNote":""},{"id":"DON_03","code":"DON","sub":null,"q":"Is a \"go / no go\" meeting conducted before starting a proposal development process?","links":[["Assessment Tool (cat 4): Go No-Go Tool","https://npaid.sharepoint.com/:x:/s/HO-DHC-Handbook/EdrNgviW7WpIksJX_g6PUMcBh2KeNMx0U6cKXbwBDahHPg?e=Om67Nl&CID=ADC426B7-C736-47AD-9973-4AAE8D113602"]],"gov":"Assessment Tool (cat 4): Go No-Go Tool","nogov":false,"hint":"","coNote":""},{"id":"DON_04","code":"DON","sub":null,"q":"Are \"kick off meetings\" held as part of the proposal development process?","links":[["Procedure (cat 3): Project Cycle Management","https://npaid.sharepoint.com/sites/HO-DHC-Handbook/SitePages/Project%20Cycle%20Management.aspx?isSPOFile=1&xsdata=MDV8MDJ8fDM1NzVjOTVlNjgxNDRlNWVjMzk1MDhkZjBlNTZkY2YzfDg3Yzk2ZjcyNjc5YzQxZWJiZmU3ZWMxYWUyNDg2ZjI2fDB8MHw2MzkyNDU0MzgzNDY4NDM4MTl8VW5rbm93bnxWR1ZoYlhOVFpXTjFjbWwwZVZObGNuWnBZMlY4ZXlKRFFTSTZJbFJsWVcxelgwRlVVRk5sY25acFkyVmZVMUJQVEU5R0lpd2lWaUk2SWpBdU1DNHdNREF3SWl3aVVDSTZJbGRwYmpNeUlpd2lRVTRpT2lKUGRHaGxjaUlzSWxkVUlqb3hNWDA9fDF8TDJOb1lYUnpMekU1T20xbFpYUnBibWRmV2tSYWFscEhVbXhOZWxsMFQwUkNhbGxwTURCTmJVMHhURlJuTTFsNlRYUk5lbFY1VGpKYWJFOUhUWGxaYlZwdFFIUm9jbVZoWkM1Mk1pOXRaWE56WVdkbGN5OHhOemc0T1RRM01ETXpNVEF5fGQ1OTE4Mzg2NjE5ODRmZmEzOWI3MDhkZjBlNTZkY2YzfGMxYTEzN2U4ZDkyMDRjNTM5MzVkZmRiZTM1YzY2OWY0&sdata=Q3hVNnFtR0VLMGRqbDdxNWtvRVhpeURFYmFCZzk2MkliSTJOR3MyMFJYWT0%3D&ovuser=87c96f72-679c-41eb-bfe7-ec1ae2486f26%2CKnuVol521%40npaid.org&TeamsCID=6d5f0611-6d84-4449-8af7-075f22145b5b&OR=Teams-HL&CT=1788947048194&clickparams=eyJBcHBOYW1lIjoiVGVhbXMtRGVza3RvcCIsIkFwcFZlcnNpb24iOiI0OS8yNjA4MTMxOTMwOCJ9&linkOpenTime=1788947048212"]],"gov":"Procedure (cat 3): Project Cycle Management","nogov":false,"hint":"","coNote":""},{"id":"DON_05","code":"DON","sub":null,"q":"Do you always have \"grant opening meetings\", capturing all donor requirements?","links":[["Procedure (cat 3): Grant Opening Meeting","https://npaid.sharepoint.com/:w:/r/sites/GLO-Finance-QMS/_layouts/15/Doc.aspx?sourcedoc=%7B39C4C5D0-9558-4E7A-87C2-42D4F1E7A6F1%7D&file=1-4%20PGM%20-%20Grant%20Opening%20Meeting.doc&action=default&mobileredirect=true&CID=A9E4D92A-DDDF-454E-AF13-CDD16D7AD2B4"]],"gov":"Procedure (cat 3): Grant Opening Meeting","nogov":false,"hint":"","coNote":""},{"id":"DON_06","code":"DON","sub":null,"q":"Do you have an overview of your contractual requirements with donors - including a timeline of deliverables and deadlines for any pre-approvals/modifications?","links":[],"gov":"To be developed","nogov":true,"hint":"","coNote":""},{"id":"DON_07","code":"DON","sub":null,"q":"Do you follow the [HO proposal/grant management processes/procedure]?","links":[],"gov":"To be developed","nogov":true,"hint":"","coNote":""},{"id":"DON_08","code":"DON","sub":null,"q":"Does the CD approve all final versions of donor deliverables (eg proposals, reports)?","links":[],"gov":"To be developed","nogov":true,"hint":"","coNote":""},{"id":"COM_01","code":"COM","sub":null,"q":"Is the Communication and Advocacy plan being implemented? (see deliverables tracker)","links":[],"gov":"Needs to be added","nogov":true,"hint":"","coNote":""},{"id":"COM_02","code":"COM","sub":null,"q":"Does the country office have its own social media platforms (provide links)","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"COM_03","code":"COM","sub":null,"q":"Do the social media platforms comply with NPA policies?","links":[["Tool/webpage (cat 4): NPA Brand Portal","https://brand.npaid.org/point/en/norskfolkehjelp/"]],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"COM_04","code":"COM","sub":null,"q":"Are all social media platforms moderated and monitored for harmful behaviour online, especially towards children, youth or adults at risk?","links":[["Policy (cat 2): Safeguarding Policy","https://npaid.sharepoint.com/:b:/s/KeyDocumentsinNPA/IQAWNkYca1-EToBUgq0xc_sIAUNQporVgZIqvellyAJA7Nc?e=EaSE0X"]],"gov":"Policy (cat 2): Safeguarding Policy","nogov":false,"hint":"","coNote":""},{"id":"COM_05","code":"COM","sub":null,"q":"Are all pictures of your programme/by employees working or visiting your programme taken with informed consent by child and parent/guardian?","links":[["Policy (cat 2): Safeguarding Policy","https://npaid.sharepoint.com/:b:/s/KeyDocumentsinNPA/IQAWNkYca1-EToBUgq0xc_sIAUNQporVgZIqvellyAJA7Nc?e=EaSE0X"]],"gov":"Policy (cat 2): Safeguarding Policy","nogov":false,"hint":"","coNote":""},{"id":"PAR_01","code":"PAR","sub":null,"q":"Do you assess all the partners according to the Partner Financial Assessment tool (PFAT)?","links":[["Guideline (cat 3) PFAT - Partner Financial Assessment Guideline","https://npaid.sharepoint.com/:w:/r/sites/GLO-Finance-QMS/_layouts/15/Doc.aspx?sourcedoc=%7B7763DC5A-D775-4F00-8126-163821F56A2B%7D&file=Partner%20Financial%20Assessment%20Guideline.docx&action=default&mobileredirect=true&DefaultItemOpen=1"],["Tool (cat 4) PFAT - Partner Financial Capacity Assessment Tool","https://npaid.sharepoint.com/:x:/r/sites/GLO-Finance-QMS/_layouts/15/Doc.aspx?sourcedoc=%7B93B91142-40D9-4D95-BCC5-1146D08051AE%7D&file=Partner%20Financial%20Capacity%20Assessment%20Tool.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1"]],"gov":"Guideline (cat 3): PFAT Guideline Tool (cat 4): PFAT Tool","nogov":false,"hint":"","coNote":""},{"id":"PAR_02","code":"PAR","sub":null,"q":"Have you implemented the Partner Risk Mitigation tool?","links":[["Guideline (cat 3): Partner Risk Mitigation Guideline","https://npaid.sharepoint.com/:w:/r/sites/GLO-Finance-QMS/_layouts/15/Doc.aspx?sourcedoc=%7B428BF1F8-A51B-4B66-89F2-C22D7DDB49B3%7D&file=NPA%20Partner%20Risk%20Mitigation.docx&action=default&mobileredirect=true&DefaultItemOpen=1&CID=BFFE7F39-7E92-42FB-B91A-D627F9818EC0"]],"gov":"Guideline (cat 3): Partner Risk Mitigation Guideline","nogov":false,"hint":"","coNote":""},{"id":"PAR_03","code":"PAR","sub":null,"q":"Do you implement Organisational Development Dialogue and Assessment Tool (ODDAT) with partners?","links":[["ODDAT for results monitoring","https://npaid.sharepoint.com/:u:/r/sites/HO-DHC-Handbook/SitePages/ODDAT%20for%20results%20monitoring.aspx?d=w1f26374399ee48adbc6cbca3f64b6999&csf=1&web=2&share=IQBDNyYf7pmtSLxsvKP2S2mZARz2-WwaROD_SmaRQF3MQpE&e=LHFdFc"]],"gov":"CIV handbook - guidelines","nogov":false,"hint":"","coNote":""},{"id":"PAR_04","code":"PAR","sub":null,"q":"Do you comply to contractual terms with regard to transferring funds to partner (reporting, %spending, maximum amounts not exceeded)?","links":[["Cooperating Partner Contract Template Norad 2025-2029.docx","https://npaid.sharepoint.com/:w:/r/sites/GLO-Finance-QMS/KB/Cooperating%20Partner%20Contract%20Template%20Norad%202025-2029.docx?d=wb3eaf8decaa34600a3ff5a7432f8b9b9&csf=1&web=1&e=HVk3CC"]],"gov":"Finance handbook - Partner management","nogov":false,"hint":"","coNote":""},{"id":"PAR_05","code":"PAR","sub":null,"q":"Do you require documentation confirming that the payment/grant has been correctly entered into the partners accounts?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"Do you document this? Do you use checklists?","coNote":""},{"id":"PAR_06","code":"PAR","sub":null,"q":"Do you follow up all partners' audits and management letters?","links":[["13 6 Audits - Partner audit_new guideline.doc","https://npaid.sharepoint.com/:w:/r/sites/GLO-Finance-QMS/KB/13%206%20Audits%20-%20Partner%20audit_new%20guideline.doc?d=wd667e87fff384270a3892891b247096f&csf=1&web=1&e=dvBsYv"]],"gov":"Finance handbook - Partner management","nogov":false,"hint":"Do you document this? Do you use checklists?","coNote":""},{"id":"PAR_07","code":"PAR","sub":null,"q":"Have all partners been offered training on Safeguarding?","links":[],"gov":"Policy (cat 2): Safeguarding Policy","nogov":false,"hint":"","coNote":""},{"id":"PAR_08","code":"PAR","sub":null,"q":"Do all partners have a Safeguarding (or equivalent) policy in accordance with the contract?","links":[],"gov":"Policy (cat 2): Safeguarding Policy","nogov":false,"hint":"","coNote":""},{"id":"PAR_09","code":"PAR","sub":null,"q":"Have all partners been offered a joint needs assessment and support to draw up Safeguarding policies and routines, where needed?","links":[],"gov":"Policy (cat 2): Safeguarding Policy","nogov":false,"hint":"","coNote":""},{"id":"PAR_10","code":"PAR","sub":null,"q":"Are all cooperating partners offered support to conduct internal investigations?","links":[],"gov":"Policy (cat 2): Safeguarding Policy","nogov":false,"hint":"","coNote":""},{"id":"PAR_11","code":"PAR","sub":null,"q":"Are all cooperating partners reporting suspected Safeguarding cases immediately to NPA, in accordance with their contractual obligation?","links":[],"gov":"Policy (cat 2): Safeguarding Policy","nogov":false,"hint":"","coNote":""},{"id":"ACO_01","code":"ACO","sub":null,"q":"Does the programme have staff with the necessary competence for investigating corruption cases?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"ACO_02","code":"ACO","sub":null,"q":"Do all staff and stakeholders know how to report corruption cases, and what protection NPA offer them in return?","links":[["Policy (cat 2): NPA Anti-Corruption Policy 2026","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQDRnj1HguRfRZPP7d1BRQR-AZmbiCrzcnxUyJonyEWUaww?e=HKEcgb"],["Policy (cat 2): Conflict of Interest Policy (2026)","https://npaid.sharepoint.com/:b:/s/KeyDocumentsinNPA/IQDayQkuEy3GQrjWQIUshdoWAYjCcLohvSBUJVgX0jd42Dw?e=LWXDFX"]],"gov":"Policy (cat 2): NPA Anti-Corruption Policy 2026 Policy (cat 2): Conflict of Interest Policy (2026)","nogov":false,"hint":"","coNote":""},{"id":"ACO_03","code":"ACO","sub":null,"q":"Have you reported all suspicions of corrupt practices about NPA or partner employees without delay?","links":[["Policy (cat 2): NPA Anti-Corruption Policy 2026","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQDRnj1HguRfRZPP7d1BRQR-AZmbiCrzcnxUyJonyEWUaww?e=HKEcgb"]],"gov":"Policy (cat 2): NPA Anti-Corruption Policy 2026","nogov":false,"hint":"","coNote":""},{"id":"ACO_04","code":"ACO","sub":null,"q":"Does the Country Office have a Focal Point on Anti-Corruption?","links":[["Policy (cat 2): NPA Anti-Corruption Policy 2026","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQDRnj1HguRfRZPP7d1BRQR-AZmbiCrzcnxUyJonyEWUaww?e=HKEcgb"]],"gov":"Policy (cat 2): NPA Anti-Corruption Policy 2026","nogov":false,"hint":"","coNote":""},{"id":"ICT_01","code":"ICT","sub":null,"q":"Do you involve IT at HO at the beginning of procurement of IT service/system","links":[["Policy (cat 2): NPA Information Security Policy","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQDcAygmdgw3T7RBgWaHc78KAWTP2YLURt9iUtrY9_NMrQs?e=TI3ZWV"]],"gov":"Policy (cat 2): NPA Information Security Policy","nogov":false,"hint":"","coNote":""},{"id":"ICT_02","code":"ICT","sub":null,"q":"Is there IT system orientation for new employees?","links":[["Policy (cat 2): NPA Information Security Policy","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQDcAygmdgw3T7RBgWaHc78KAWTP2YLURt9iUtrY9_NMrQs?e=TI3ZWV"]],"gov":"Policy (cat 2): NPA Information Security Policy","nogov":false,"hint":"","coNote":""},{"id":"ICT_03","code":"ICT","sub":null,"q":"Do you remove users who have ended their contract with NPA? routine","links":[["Policy (cat 2): NPA Information Security Policy","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQDcAygmdgw3T7RBgWaHc78KAWTP2YLURt9iUtrY9_NMrQs?e=TI3ZWV"]],"gov":"Policy (cat 2): NPA Information Security Policy","nogov":false,"hint":"","coNote":""},{"id":"ICT_04","code":"ICT","sub":null,"q":"Do your staff use any communication platform internally, that is not NPA standard?","links":[["Policy (cat 2): NPA Information Security Policy","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQDcAygmdgw3T7RBgWaHc78KAWTP2YLURt9iUtrY9_NMrQs?e=TI3ZWV"]],"gov":"Policy (cat 2): NPA Information Security Policy","nogov":false,"hint":"","coNote":""},{"id":"ICT_05","code":"ICT","sub":null,"q":"Are any of the staff storing work related information in local storage on their laptop?","links":[["Policy (cat 2): NPA Acceptable Use Policy","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQDHjeM4rqjJS5eXuUL-7mmZAcfaFxXztJUFE9ppMQLG61k?e=kkyc1R"]],"gov":"Policy (cat 2): NPA Acceptable Use Policy","nogov":false,"hint":"","coNote":""},{"id":"ICT_06","code":"ICT","sub":null,"q":"Does the Country Office have any non NPA standard system that you store data in?","links":[["Policy (cat 2): NPA Acceptable Use Policy","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQDHjeM4rqjJS5eXuUL-7mmZAcfaFxXztJUFE9ppMQLG61k?e=kkyc1R"]],"gov":"Policy (cat 2): NPA Acceptable Use Policy","nogov":false,"hint":"if yes, is the system secured in other ways than just usernames and passwords","coNote":""},{"id":"ICT_07","code":"ICT","sub":null,"q":"Is the internet connection shared with others than staff?","links":[["Policy (cat 2): NPA Information Security Policy","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQDcAygmdgw3T7RBgWaHc78KAWTP2YLURt9iUtrY9_NMrQs?e=TI3ZWV"]],"gov":"Policy (cat 2): NPA Information Security Policy","nogov":false,"hint":"","coNote":""},{"id":"ICT_08","code":"ICT","sub":null,"q":"Are information security incidents followed up and reported?","links":[["Tool (cat 4): Security incident reporting SharePoint site","https://npaid.sharepoint.com/sites/GLO-SEC/SitePages/Security-incident-reporting.aspx"]],"gov":"Tool (cat 4): Security incident reporting SharePoint site","nogov":false,"hint":"","coNote":""},{"id":"ICT_09","code":"ICT","sub":null,"q":"Are deviations from IT standards being documented?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"ICT_10","code":"ICT","sub":null,"q":"Does the Office have clear guidelines on who is responsible for screenings against sanctions lists and when this should be undertaken ?","links":[["Routine (cat 3): Routine for Screening Against Sanctions and Terrorist Lists","https://npaid.sharepoint.com/:b:/s/KeyDocumentsinNPA/IQDfd8caU0f5QaU8qCFItP_yATfN3AoVHfc1jIFUmXe2yXA?e=j8D3Aq"]],"gov":"Routine (cat 3): Routine for Screening Against Sanctions and Terrorist Lists","nogov":false,"hint":"","coNote":""},{"id":"ICT_11","code":"ICT","sub":null,"q":"Is the Country Office aware of any applicable sanctions regimes (e.g. US, EU or UN) against their country of intervention ?","links":[["Policy (cat 2): Sanctions and Anti-terrorism Policy","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQDNnDL-qjmsRbFL-rXqeD_qAZQ4ht2HGOxVEmSi7Anwby8?e=nQIbLq"]],"gov":"Policy (cat 2): Sanctions and Anti-terrorism Policy","nogov":false,"hint":"","coNote":""},{"id":"ICT_12","code":"ICT","sub":null,"q":"Is the NPA Risk Mitigation Instructions for Payments regularly consulted for payments to suppliers, partners and employees?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"ICT_13","code":"ICT","sub":null,"q":"Has the country office established procedures to ensure personal data - including beneficiary data - is collected, used, stored, shared, and deleted in accordance with NPA's Data Privacy Policy and local legal obligations?","links":[["Policy (cat 2): Policy for Data Privacy","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQCnUOMlE8RrQIlRasFVaJoBAd7PPAFkV6j_U5wLgHTYnuc?e=B8brR8"]],"gov":"Policy (cat 2): Policy for Data Privacy","nogov":false,"hint":"","coNote":""},{"id":"SEC_01","code":"SEC","sub":null,"q":"Do all visitors to the programme receive the pre-travel briefing prior to arriving in country and the in-country security briefing upon arrival?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"SEC_02","code":"SEC","sub":null,"q":"Does the programme have an updated set of relevant security management SOPs, based on the outcome of the security risk assessment?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"SEC_03","code":"SEC","sub":null,"q":"Are security SOPs fully implemented in the programme?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"SEC_04","code":"SEC","sub":null,"q":"Have all programme staff been introduced to and trained on the crisis management procedure? Has the CO SMT had a crisis management exercise within the last two years or as soon as a new CD has been appointed?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"SEC_05","code":"SEC","sub":null,"q":"Are all staff aware of the security incident reporting tool on SP?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"SEC_06","code":"SEC","sub":null,"q":"Does the programme have a systematic approach to identify and report security related incidents?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"SEC_07","code":"SEC","sub":null,"q":"Have security incidents and near misses been timely reported through the security incident reporting tool on SP?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"CMP_01","code":"CMP","sub":null,"q":"Does the Country Office have clear guidelines on who is responsible for screenings against sanctions lists and when this should be undertaken ?","links":[["Routine (cat 3): Routine for Screening Against Sanctions and Terrorist Lists","https://npaid.sharepoint.com/:b:/s/KeyDocumentsinNPA/IQDfd8caU0f5QaU8qCFItP_yATfN3AoVHfc1jIFUmXe2yXA?e=j8D3Aq"]],"gov":"Routine (cat 3): Routine for Screening Against Sanctions and Terrorist Lists","nogov":false,"hint":"","coNote":""},{"id":"CMP_02","code":"CMP","sub":null,"q":"Is the Country Office aware of any applicable sanctions regimes (e.g. US, EU or UN) against their country of intervention ?","links":[["Policy (cat 2): Sanctions and Anti-terrorism Policy","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQDNnDL-qjmsRbFL-rXqeD_qAZQ4ht2HGOxVEmSi7Anwby8?e=nQIbLq"]],"gov":"Policy (cat 2): Sanctions and Anti-terrorism Policy","nogov":false,"hint":"","coNote":""},{"id":"CMP_03","code":"CMP","sub":null,"q":"Is the NPA Risk Mitigation Instructions for Payments regularly consulted for payments to suppliers, partners and employees?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"CRS_01","code":"CRS","sub":null,"q":"Has the Country Office established and implemented an Environmental Management System (EMS) in accordance with NPA's Climate and Environment Policy and EMS Programme Handbook?","links":[["Policy (cat 2): Climate and Environment Policy","https://npaid.sharepoint.com/:w:/s/KeyDocumentsinNPA/IQDLNki9qGa4SbaRclQUgtVDAT7P3fgWlHaoJOaWWZMnetU?e=0kekYh"],["Handbook (cat 3): Climate, Environment Sustainability in INPA International Programmes","https://npaid.sharepoint.com/:b:/s/GLO-Climate-Environment-and-Sustainability/IQAm1du4tOnZQLhpZPKxFySPAR9CfdvVSCCUuHiZGvUpWlw?e=dxAfjD"]],"gov":"Policy (cat 2): Climate and Environment Policy Guideline (cat 3): CES Programme Handbook","nogov":false,"hint":"","coNote":""},{"id":"CRS_02","code":"CRS","sub":null,"q":"Environmental Focal Point assigned","links":[["Handbook (cat 3): Climate, Environment Sustainability in INPA International Programmes","https://npaid.sharepoint.com/:b:/s/GLO-Climate-Environment-and-Sustainability/IQAm1du4tOnZQLhpZPKxFySPAR9CfdvVSCCUuHiZGvUpWlw?e=dxAfjD"]],"gov":"Guideline (cat 3): CES Programme Handbook","nogov":false,"hint":"","coNote":""},{"id":"CRS_03","code":"CRS","sub":null,"q":"Gender Transformative Programme design (incl. using the GAD Marker at design stage) & RFs","links":[["Policy (cat 2): Gender Equality Policy (2017)","https://folkehjelp.no/files/Publications/Development-and-Humanitarian-Cooperation/NPA_GENDER_POLICY.pdf"]],"gov":"Policy (cat 2): Gender Equality Policy (2017)","nogov":false,"hint":"","coNote":""},{"id":"CRS_04","code":"CRS","sub":null,"q":"Annual Plan for Strengthening Capacity of Staff and Partners for Gender Equality Programming at CO level being implemented","links":[["Policy (cat 2): Gender Equality Policy (2017)","https://folkehjelp.no/files/Publications/Development-and-Humanitarian-Cooperation/NPA_GENDER_POLICY.pdf"]],"gov":"Policy (cat 2): Gender Equality Policy (2017)","nogov":false,"hint":"","coNote":""},{"id":"SFG_01","code":"SFG","sub":null,"q":"Are appropriate operating procedures in place to ensure NPA staff never work alone with programme beneficiaries, especially children and youth?","links":[],"gov":"Policy (cat 2): Safeguarding Policy","nogov":false,"hint":"","coNote":""},{"id":"SFG_02","code":"SFG","sub":null,"q":"Have you consulted the Global Safeguarding Advisor to ensure appropriate questions are included in any staff surveys you have conducted?","links":[],"gov":"Policy (cat 2): Safeguarding Policy","nogov":false,"hint":"","coNote":""},{"id":"SFG_03","code":"SFG","sub":null,"q":"Have you reported all Safeguarding complaints or concerns you have received about NPA or partner employees to the Special Advisor Safeguarding within 24-48 hours?","links":[],"gov":"Policy (cat 2): Safeguarding Policy","nogov":false,"hint":"","coNote":""},{"id":"SFG_04","code":"SFG","sub":null,"q":"Safeguarding focal point(s) is assigned","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"SFG_05","code":"SFG","sub":null,"q":"Do all staff receive Safeguarding training at a level commensurate with their role in the organisation?","links":[],"gov":"Policy (cat 2): Safeguarding Policy","nogov":false,"hint":"","coNote":""},{"id":"CFM_01","code":"CFM","sub":null,"q":"Does the country office have a functioning CFM in place in accordance with the CFM toolkit?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"CFM_02","code":"CFM","sub":null,"q":"Do all programme beneficiaries and cooperating partners know how to report concerns or allegations of abuse, and what protections NPA offers them in return?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"CFM_03","code":"CFM","sub":null,"q":"Do all employees and cooperating partners have information about how to report concerns or allegations of abuse?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"CFM_04","code":"CFM","sub":null,"q":"Are programme beneficiaries told how NPA representatives are expected to behave as part of all programme design?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"LOG_01","code":"LOG","sub":null,"q":"Are market surveys done periodically to check prices of regularly purchased items?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"LOG_02","code":"LOG","sub":null,"q":"Is the preferred suppliers list reviewed minimum once a year?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"LOG_03","code":"LOG","sub":null,"q":"Is procurement handled in accordance with procurement strategy and procurement plan?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"LOG_04","code":"LOG","sub":null,"q":"Are all procurement documents linked and traceable?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"LOG_05","code":"LOG","sub":null,"q":"Is the list of issued procurement waivers kept and up to date?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"LOG_06","code":"LOG","sub":null,"q":"Are all received/issued goods handled in accordance with the procedure 'Warehouse management'?","links":[["Guideline (cat 3): Warehouse Management Guideline","https://npaid.sharepoint.com/:w:/r/sites/GLO-Logistics-QMS/_layouts/15/Doc.aspx?sourcedoc=%7B4D15820A-122F-41E3-B148-B89BD0B103E1%7D&file=Warehouse%20Management.docx&action=default&mobileredirect=true"]],"gov":"Guideline (cat 3): Warehouse Management Guideline","nogov":false,"hint":"","coNote":""},{"id":"LOG_07","code":"LOG","sub":null,"q":"Are spot checks of warehouse management conducted by CD or FM?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"LOG_08","code":"LOG","sub":null,"q":"Is all stock related to a specific project distributed within the project period?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"LOG_09","code":"LOG","sub":null,"q":"Is quaterly stock reconciliation report produced regularly?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"LOG_10","code":"LOG","sub":null,"q":"Are fixed assets are properly registered and up-to-date in Agresso?","links":[],"gov":"Handbook (cat 3): Asset Management","nogov":false,"hint":"","coNote":""},{"id":"LOG_11","code":"LOG","sub":null,"q":"Are assets physically tagged with unique numbers to allow easy identification?","links":[],"gov":"Handbook (cat 3): Asset Management","nogov":false,"hint":"","coNote":""},{"id":"LOG_12","code":"LOG","sub":null,"q":"Are all inventory items tracked correctly, either in a spreadsheet or in Agresso (preferably in Agresso), and the information is current.","links":[],"gov":"Handbook (cat 3): Asset Management","nogov":false,"hint":"","coNote":""},{"id":"LOG_13","code":"LOG","sub":null,"q":"Was a full year-end stock take verification performed, and the status of assets and inventory verified, as required by the procedure Verification of assets and inventories.","links":[],"gov":"Handbook (cat 3): Asset Management","nogov":false,"hint":"","coNote":""},{"id":"LOG_14","code":"LOG","sub":null,"q":"Are assets and/or inventory that are not needed and/or are unusable were identified and properly disposed of at year-end and these items were closed in Agresso.","links":[],"gov":"Handbook (cat 3): Asset Management","nogov":false,"hint":"","coNote":""},{"id":"LOG_15","code":"LOG","sub":null,"q":"Are maintenance schedules followed for all vehicles?","links":[["Guideline (cat 3): Fleet Management Guideline","https://npaid.sharepoint.com/sites/GLO-Logistics-QMS/KB/Fleet%20Management.docx?web=1"]],"gov":"Guideline (cat 3): Fleet Management Guideline","nogov":false,"hint":"","coNote":""},{"id":"LOG_16","code":"LOG","sub":null,"q":"Are all vehicles (/generators) safe to use/operate and have a valid registration and insurance cover?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"LOG_17","code":"LOG","sub":null,"q":"Do only authorised staff drive NPA vehicles?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"LOG_18","code":"LOG","sub":null,"q":"Do all vehicles carry a log book (with mileage, fuel consumption, fuel filling and maintenance)that is completed for every journey ?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"LOG_19","code":"LOG","sub":null,"q":"Is vehicle use and fuel consumption calculated and checked every month for each vehicle?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"LOG_20","code":"LOG","sub":null,"q":"Are generator usage, fuel and maintenance tracked and recorded?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"LOG_21","code":"LOG","sub":null,"q":"Is vehicle fleet composition and size optimal for the size of the office?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"LOG_22","code":"LOG","sub":null,"q":"Do you have procedures for private use of NPA cars?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"HSE_01","code":"HSE","sub":null,"q":"Are you following up on the Health, Safety and Environment (HSE) annual management review?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"HR_01","code":"HR","sub":null,"q":"All employees have signed employment contracts which comply with local labour law and NPA requirements.","links":[["Policy (cat 2): HR Policy for National Staff","https://cp.compendia.no/norsk-folkehjelp/expat-handbook/1217663"]],"gov":"Policy (cat 2): HR Policy for National Staff Template (cat 3 or 4): Employment Contract Templates Tool (cat 4): Soliday","nogov":false,"hint":"","coNote":""},{"id":"HR_02","code":"HR","sub":null,"q":"The Global Staff policy is followed and the appendix for overriding rules is up to date","links":[["Policy (cat 2): HR Policy for National Staff","https://cp.compendia.no/norsk-folkehjelp/expat-handbook/1217663"],["Appendices (cat 4): Appendices for overriding rules","https://cp.compendia.no/norsk-folkehjelp/expat-handbook/1217703"]],"gov":"Policy (cat 2): HR Policy for National Staff Appendices (cat 4): Appendices for overriding rules","nogov":false,"hint":"","coNote":""},{"id":"HR_03","code":"HR","sub":null,"q":"Personnel files in Soliday are complete and up to date, including updated employment contracts and relevant certificates.","links":[["Guidance (cat 3): Guidance on using Soliday","https://npaid.sharepoint.com/sites/GLO-HR/SitePages/Workday(1).aspx?csf=1&web=1&share=ETOm1ySInUFLhxwcy8v0DQsBk86nyIwubgsLRNMWY2opPg&e=uSxW9c&CID=f25105d0-c16d-4d5a-a3ba-b425254fe27f"]],"gov":"Guidance (cat 3): Guidance on using Soliday","nogov":false,"hint":"","coNote":""},{"id":"HR_04","code":"HR","sub":null,"q":"All key policies and contractual documents are available to all staff in a language they understand.","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"HR_05","code":"HR","sub":null,"q":"Employees are registered correctly in Soliday, including role category, contract type, location, payroll information and employment status.","links":[["Guidance (cat 3): Guidance on using Soliday","https://npaid.sharepoint.com/sites/GLO-HR/SitePages/Workday(1).aspx?csf=1&web=1&share=ETOm1ySInUFLhxwcy8v0DQsBk86nyIwubgsLRNMWY2opPg&e=uSxW9c&CID=f25105d0-c16d-4d5a-a3ba-b425254fe27f"]],"gov":"Guidance (cat 3): Guidance on using Soliday","nogov":false,"hint":"","coNote":""},{"id":"HR_06","code":"HR","sub":null,"q":"Reporting lines and supervisory organisations are registered correctly in Soliday.","links":[["Guidance (cat 3): Guidance on using Soliday","https://npaid.sharepoint.com/sites/GLO-HR/SitePages/Workday(1).aspx?csf=1&web=1&share=ETOm1ySInUFLhxwcy8v0DQsBk86nyIwubgsLRNMWY2opPg&e=uSxW9c&CID=f25105d0-c16d-4d5a-a3ba-b425254fe27f"]],"gov":"Guidance (cat 3): Guidance on using Soliday","nogov":false,"hint":"","coNote":""},{"id":"HR_07","code":"HR","sub":null,"q":"Job analyses are created and documented.","links":[["Handbook (cat 3): Recruitment process model","https://cp.compendia.no/norsk-folkehjelp/expat-handbook/664106"]],"gov":"Policy (cat 2): Recruitment & Internal Mobility (currently under revision, September 2026) Handbook (cat 3): Recruitment process model","nogov":false,"hint":"","coNote":""},{"id":"HR_08","code":"HR","sub":null,"q":"Start-up meetings with relevant participants are held","links":[["Handbook (cat 3): Recruitment process model","https://cp.compendia.no/norsk-folkehjelp/expat-handbook/664106"]],"gov":"Handbook (cat 3): Recruitment process model","nogov":false,"hint":"","coNote":""},{"id":"HR_09","code":"HR","sub":null,"q":"Vacancies are advertised through Soliday (on internal or external vacancy page) Shortlisting is done in Soliday.","links":[["Guidance (cat 3): Guidance on using Soliday","https://npaid.sharepoint.com/sites/GLO-HR/SitePages/Workday(1).aspx?csf=1&web=1&share=ETOm1ySInUFLhxwcy8v0DQsBk86nyIwubgsLRNMWY2opPg&e=uSxW9c&CID=f25105d0-c16d-4d5a-a3ba-b425254fe27f"]],"gov":"Guidance (cat 3): Guidance on using Soliday","nogov":false,"hint":"","coNote":""},{"id":"HR_10","code":"HR","sub":null,"q":"Interviews are documented in Soliday.","links":[["Guidance (cat 3): Guidance on using Soliday","https://npaid.sharepoint.com/sites/GLO-HR/SitePages/Workday(1).aspx?csf=1&web=1&share=ETOm1ySInUFLhxwcy8v0DQsBk86nyIwubgsLRNMWY2opPg&e=uSxW9c&CID=f25105d0-c16d-4d5a-a3ba-b425254fe27f"]],"gov":"Guidance (cat 3): Guidance on using Soliday","nogov":false,"hint":"","coNote":""},{"id":"HR_11","code":"HR","sub":null,"q":"Potential reference checks are conducted and documented in Soliday.","links":[["Guidance (cat 3): Guidance on using Soliday","https://npaid.sharepoint.com/sites/GLO-HR/SitePages/Workday(1).aspx?csf=1&web=1&share=ETOm1ySInUFLhxwcy8v0DQsBk86nyIwubgsLRNMWY2opPg&e=uSxW9c&CID=f25105d0-c16d-4d5a-a3ba-b425254fe27f"]],"gov":"Guidance (cat 3): Guidance on using Soliday","nogov":false,"hint":"","coNote":""},{"id":"HR_12","code":"HR","sub":null,"q":"Final recruitment decision / nomination is documented in Soliday.","links":[["Guidance (cat 3): Guidance on using Soliday","https://npaid.sharepoint.com/sites/GLO-HR/SitePages/Workday(1).aspx?csf=1&web=1&share=ETOm1ySInUFLhxwcy8v0DQsBk86nyIwubgsLRNMWY2opPg&e=uSxW9c&CID=f25105d0-c16d-4d5a-a3ba-b425254fe27f"]],"gov":"Guidance (cat 3): Guidance on using Soliday","nogov":false,"hint":"","coNote":""},{"id":"HR_13","code":"HR","sub":null,"q":"Signed pre-employment documents (Contract and other documents - see onboarding section)","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"HR_14","code":"HR","sub":null,"q":"Have all candidates recruited to work with children, young people or at-risk groups shared a clean police certificate of good conduct?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"HR_15","code":"HR","sub":null,"q":"Confirm that new staff go through onboarding.","links":[["Template (cat 4): Onboarding Plan Template","https://npaid.sharepoint.com/:w:/r/sites/GLO-HR-Onboarding/_layouts/15/Doc.aspx?sourcedoc=%7B71AA1739-C43F-424F-8E80-CC4C5737EDD0%7D&file=Onboarding%20plan%20(ENG).docx&action=default&mobileredirect=true"]],"gov":"Template (cat 4): Onboarding Plan Template","nogov":false,"hint":"","coNote":"Onboarding Checklist; Code of Conduct; Safeguarding Policy; Conflict of Interest Declaration Form; Substance Abuse Policy; HSE Training Matrix"},{"id":"HR_16","code":"HR","sub":null,"q":"Confirm that Code of Conduct acknowledgements are collected.","links":[["Policy (cat 2): NPA Code of Conduct","https://npaid.sharepoint.com/sites/HO-HR-Department/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FHO%2DHR%2DDepartment%2FShared%20Documents%2FCompliance%20Policy%20%26%20Procedures%2FCode%5Fof%5FConduct%5FProcedures%2FCoC%20Engelsk%2FNPA%20Code%20of%20Conduct%2Epdf&parent=%2Fsites%2FHO%2DHR%2DDepartment%2FShared%20Documents%2FCompliance%20Policy%20%26%20Procedures%2FCode%5Fof%5FConduct%5FProcedures%2FCoC%20Engelsk"]],"gov":"Policy (cat 2): NPA Code of Conduct","nogov":false,"hint":"","coNote":""},{"id":"HR_17","code":"HR","sub":null,"q":"Confirm that mandatory Safeguarding eLearning and annual in-person refresher training is completed.","links":[["Policy (cat 2): NPA Safeguarding Policy","https://npaid.sharepoint.com/:b:/s/KeyDocumentsinNPA/IQAWNkYca1-EToBUgq0xc_sIAUNQporVgZIqvellyAJA7Nc?e=ah4FEn"]],"gov":"Policy (cat 2): NPA Safeguarding Policy","nogov":false,"hint":"","coNote":""},{"id":"HR_18","code":"HR","sub":null,"q":"Confirm that mandatory HSE training is completed.","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"HR_19","code":"HR","sub":null,"q":"Confirm that conflict-of-interest training is completed where relevant.","links":[["Policy (cat 2): NPA Conflict of Interest Policy","https://npaid.sharepoint.com/:b:/s/KeyDocumentsinNPA/IQDayQkuEy3GQrjWQIUshdoWAYjCcLohvSBUJVgX0jd42Dw?e=YDBBBC"]],"gov":"Policy (cat 2): NPA Conflict of Interest Policy","nogov":false,"hint":"","coNote":""},{"id":"HR_20","code":"HR","sub":null,"q":"Confirm that substance abuse awareness is covered where relevant.","links":[["Procedure (cat 3): Procedure for addressing substance abuse in NPA","https://npaid.sharepoint.com/sites/HO-HR-Department/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FHO%2DHR%2DDepartment%2FShared%20Documents%2FCompliance%20Policy%20%26%20Procedures%2FProsedyre%20Rus%20og%20%2Dspillavhengighet%2FEngelsk%2FProcedure%2FProcedure%20for%20addressing%20Substance%20abuse%20NPA%2Epdf&parent=%2Fsites%2FHO%2DHR%2DDepartment%2FShared%20Documents%2FCompliance%20Policy%20%26%20Procedures%2FProsedyre%20Rus%20og%20%2Dspillavhengighet%2FEngelsk%2FProcedure"]],"gov":"Procedure (cat 3): Procedure for addressing substance abuse in NPA","nogov":false,"hint":"","coNote":""},{"id":"HR_21","code":"HR","sub":null,"q":"Confirm that sick time and absence is registered correctly in Soliday.","links":[["Guidance (cat 3): Guidance on using Soliday","https://npaid.sharepoint.com/sites/GLO-HR/SitePages/Workday(1).aspx?csf=1&web=1&share=ETOm1ySInUFLhxwcy8v0DQsBk86nyIwubgsLRNMWY2opPg&e=uSxW9c&CID=f25105d0-c16d-4d5a-a3ba-b425254fe27f"]],"gov":"Guidance (cat 3): Guidance on using Soliday","nogov":false,"hint":"","coNote":""},{"id":"HR_22","code":"HR","sub":null,"q":"Confirm that follow-up is completed in accordance with local labor law","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"HR_23","code":"HR","sub":null,"q":"Confirm that workplace adjustments are in line with local labor law and documented.","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"HR_24","code":"HR","sub":null,"q":"Confirm that return-to-work support is documented.","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"HR_25","code":"HR","sub":null,"q":"Confirm that PDDs are conducted using Soliday","links":[["Guidance (cat 3): Guidance on using Soliday","https://npaid.sharepoint.com/sites/GLO-HR/SitePages/Workday(1).aspx?csf=1&web=1&share=ETOm1ySInUFLhxwcy8v0DQsBk86nyIwubgsLRNMWY2opPg&e=uSxW9c&CID=f25105d0-c16d-4d5a-a3ba-b425254fe27f"]],"gov":"Guidance (cat 3): Guidance on using Soliday","nogov":false,"hint":"","coNote":""},{"id":"HR_26","code":"HR","sub":null,"q":"Confirm that agreed learning needs are followed up in regular check-ins between manager and employee","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"HR_27","code":"HR","sub":null,"q":"All employees have signed employment contracts which comply with local labour law and NPA requirements.","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"HR_28","code":"HR","sub":null,"q":"Compensation and Benefits ( Global salary policy finalized by the end of 2026 ) NEED INPUT FROM COMP & BEN","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"HR_29","code":"HR","sub":null,"q":"The Global salary policy is followed","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"Norsk Folkehjelp :: Global Staff and Management Handbook :: 9.1 Global salary policy","coNote":"The Global Salary Policy"},{"id":"HR_30","code":"HR","sub":null,"q":"A system for regular review of staff salaries, allowances and benefits is in place","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"HR_31","code":"HR","sub":null,"q":"Is the handling of severance pay according to local legislation and employee contracts?","links":[],"gov":"link to calculation. Upload to HO SP","nogov":false,"hint":"","coNote":""},{"id":"HR_32","code":"HR","sub":null,"q":"Staff survey requirement","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"HR_33","code":"HR","sub":null,"q":"Have you consulted the Global Safeguarding Advisor to ensure appropriate questions are included in any staff surveys you have conducted?","links":[["Policy (cat 2): NPA Safeguarding Policy","https://npaid.sharepoint.com/:b:/s/KeyDocumentsinNPA/IQAWNkYca1-EToBUgq0xc_sIAUNQporVgZIqvellyAJA7Nc?e=ah4FEn"]],"gov":"Policy (cat 2): NPA Safeguarding Policy","nogov":false,"hint":"","coNote":""},{"id":"HR_34","code":"HR","sub":null,"q":"Have you applied appropriate disciplinary measures to all staff found in breach of the Safeguarding policy?","links":[["Policy (cat 2): NPA Safeguarding Policy","https://npaid.sharepoint.com/:b:/s/KeyDocumentsinNPA/IQAWNkYca1-EToBUgq0xc_sIAUNQporVgZIqvellyAJA7Nc?e=ah4FEn"]],"gov":"Policy (cat 2): NPA Safeguarding Policy","nogov":false,"hint":"","coNote":""},{"id":"FIN_01","code":"FIN","sub":"Financial Documentation, Banking and Cash Controls","q":"Has all supporting documentation for transactions and balance sheet accounts been uploaded to Unit4 and made available for audit and HO review?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_02","code":"FIN","sub":"Financial Documentation, Banking and Cash Controls","q":"Is the cash handling performed by a staff with no access to Unit 4?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_03","code":"FIN","sub":"Financial Documentation, Banking and Cash Controls","q":"Do you have an updated authorisation table and is it uploaded to HO Sharepoint?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_04","code":"FIN","sub":"Financial Documentation, Banking and Cash Controls","q":"Do you have an up to date bank signatory list and is it uploaded to HO Sharepoint?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_05","code":"FIN","sub":"Financial Documentation, Banking and Cash Controls","q":"In the last twelve months; Are banks notified immediately when an authorized account signatory leaves NPA?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_06","code":"FIN","sub":"Financial Documentation, Banking and Cash Controls","q":"In the last twelve months; are cash counts held regularly (minimum on a monthly basis)","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_07","code":"FIN","sub":"Financial Documentation, Banking and Cash Controls","q":"Are cash stored in a secure way? Is there a separate cash journal/cash book for each cash box?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_08","code":"FIN","sub":"Financial Documentation, Banking and Cash Controls","q":"Has the CD performed unannounced surprise cash counts at least two times a year for each cash box?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_09","code":"FIN","sub":"Financial Documentation, Banking and Cash Controls","q":"Do you always issue a cash receipt, signed by both the cashier and the recipient of the cash for each payment and withdrawal in cash?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_10","code":"FIN","sub":"Financial Documentation, Banking and Cash Controls","q":"Do you always apply Risk Mitigation Instructions for Payments","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_11","code":"FIN","sub":"Financial Documentation, Banking and Cash Controls","q":"In the last twelve months; Are all monthly bank reconciliations approved and signed by the CD?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_12","code":"FIN","sub":"Financial Documentation, Banking and Cash Controls","q":"In the last twelve months, have any TBRs been rated red?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_13","code":"FIN","sub":"Budget management and cash flow","q":"Is budget accountability (responsibility) clearly delegated for all parts of the budget?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_14","code":"FIN","sub":"Budget management and cash flow","q":"In the last twelve months; Do you have BvA meetings (budget vs actual) on a monthly basis?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_15","code":"FIN","sub":"Budget management and cash flow","q":"Have any significant uncovered financial risks or funding gaps been identified for the next 12 months?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_16","code":"FIN","sub":"Budget management and cash flow","q":"Do you have plans and procedures for managing cash flow in total (to ensure an adequate liquidity to cover expenses when they occur)?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_17","code":"FIN","sub":"Audit, controller visit recommendations and master action list","q":"Have the recommendations from your previous year’s external audit been implemented?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_18","code":"FIN","sub":"Audit, controller visit recommendations and master action list","q":"Have the recommendations from controller visits been implemented?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_19","code":"FIN","sub":"Audit, controller visit recommendations and master action list","q":"Has findings on master action list been followed up?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_20","code":"FIN","sub":"Audit, controller visit recommendations and master action list","q":"Does the country office have any unresolved cases related to fraud, financial irregularities, or donor compliance violations?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_21","code":"FIN","sub":"Audit, controller visit recommendations and master action list","q":"Have periodic partner oversight reviews been conducted and documented, including review of audit reports and outstanding findings?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_22","code":"FIN","sub":"Exchange rate and payroll reported","q":"Do you have a system in place for deviations on exchange rates?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""},{"id":"FIN_23","code":"FIN","sub":"Exchange rate and payroll reported","q":"Has payroll been reconsiled and reported in accordance wtih local law?","links":[],"gov":"No governing document identified. Identify and link relevant docs","nogov":true,"hint":"","coNote":""}],"countries":[{"v":"afghanistan","l":"Afghanistan"},{"v":"angola","l":"Angola"},{"v":"bosnia_and_herzegovina","l":"Bosnia and Herzegovina"},{"v":"cambodia","l":"Cambodia"},{"v":"colombia","l":"Colombia"},{"v":"ecuador","l":"Ecuador"},{"v":"ethiopia","l":"Ethiopia"},{"v":"iraq","l":"Iraq"},{"v":"kosovo","l":"Kosovo"},{"v":"lao_pdr","l":"Lao PDR"},{"v":"lebanon","l":"Lebanon"},{"v":"mozambique","l":"Mozambique"},{"v":"myanmar","l":"Myanmar"},{"v":"palestine","l":"Palestine"},{"v":"peru","l":"Peru"},{"v":"rwanda","l":"Rwanda"},{"v":"south_sudan","l":"South Sudan"},{"v":"sudan","l":"Sudan"},{"v":"syria","l":"Syria"},{"v":"thailand","l":"Thailand"},{"v":"ukraine","l":"Ukraine"},{"v":"vietnam","l":"Vietnam"},{"v":"yemen","l":"Yemen"},{"v":"zimbabwe","l":"Zimbabwe"}],"roles":[{"v":"country_director","l":"Country Director"},{"v":"deputy_country_director","l":"Deputy Country Director"},{"v":"finance_manager","l":"Finance Manager"},{"v":"hr_manager","l":"HR Manager"},{"v":"logistics_manager","l":"Logistics Manager"},{"v":"security_focal_point","l":"Security Focal Point"},{"v":"safeguarding_focal_point","l":"Safeguarding Focal Point"},{"v":"it_officer","l":"IT Officer"},{"v":"programme_manager","l":"Programme Manager"},{"v":"other","l":"Other"}],"years":["2027","2028","2029","2030","2031","2032","2033","2034","2035"],"deliverables":[{"id":"DLV_01","sec":"Strategy","t":"Updated country strategy in place and HO approved","lead":"International Department","freq":"Every four years","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_02","sec":"Strategy","t":"Annual progress report for the country strategy","lead":"International Department","freq":"Annual","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_03","sec":"Strategy","t":"Fundraising plan, donor mapping, and action plan","lead":"Donor section","freq":"Every four years","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_04","sec":"Annual plan","t":"Communications and advocacy plan","lead":"Communications","freq":"Annual","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_05","sec":"Annual plan","t":"Country office plan, including HO and external visits","lead":"International Department","freq":"Annual","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_06","sec":"Annual plan","t":"Environment and climate action plan","lead":"Environment","freq":"Annual","due":null,"dueText":"","guide":"Template (cat 4): Statement of Commitment on Climate and Environment","link":"https://npaid.sharepoint.com/:w:/s/GLO-Climate-Environment-and-Sustainability/IQBsCgx5JDjxSLC6otJzaRmLAeSPbPzo5qHGnybiBaapvcM?e=Yaz492"},{"id":"DLV_07","sec":"Annual plan","t":"Gender Equality Policy Implementation Plan","lead":"Gender Advisor","freq":"Annual","due":null,"dueText":"","guide":"Requirements (cat 3): Minimum Requirements for Country Office Implementation Plans","link":"https://npaid.sharepoint.com/:w:/s/DHC-Gender-SGBV/IQCpMFQBIBDST6juzncAe7ywAViBRMJHI2_K3fMbNtGoZsM?e=CbSLJC"},{"id":"DLV_08","sec":"Annual plan","t":"Strengthening Capacity of Staff and Partners for Gender Equality Programming at CO level","lead":"HUM section","freq":"Annual","due":null,"dueText":"","guide":"Guides (cat 3): 2026 GE & SGBV Learning Pathways","link":"https://npaid.sharepoint.com/:f:/s/DHC-Gender-SGBV/IgA2mrHuJSz3QIkXthVK-Y9CASgR057SHRkGCOSSUWphSDg?e=QGt2OK"},{"id":"DLV_09","sec":"Analysis and assessment","t":"Risk Management matrix uploaded","lead":"To be confirmed","freq":"Annual","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_10","sec":"Analysis and assessment","t":"Green Office Tool updated and uploaded","lead":"Environment","freq":"Annual","due":"02-15","dueText":"15 Feb","guide":"Guideline (cat 3): NPA Green Office Guideline","link":"https://npaid.sharepoint.com/:w:/s/GLO-Climate-Environment-and-Sustainability/IQBsCgx5JDjxSLC6otJzaRmLAeSPbPzo5qHGnybiBaapvcM?e=Yaz492"},{"id":"DLV_11","sec":"Analysis and assessment","t":"Rapid Intersectional Gender Analysis","lead":"HUM section","freq":"Annual","due":null,"dueText":"","guide":"Training material (cat 4): Rapid Gender Analysis","link":"https://npaid.sharepoint.com/sites/DHC-Gender-SGBV/SitePages/Rapid-Gender-Analysis-(RGA).aspx?csf=1&web=1&share=IQCLSYS24dd8S4BqdNl_J7IjAbhvF8UQR0c28WHDwi1s53w&e=tch1o8&CID=13a29234-517a-49da-963b-661e968c060b"},{"id":"DLV_12","sec":"Status review","t":"Overview of litigation cases","lead":"Finance","freq":"Annual","due":"01-31","dueText":"31 Jan (to be confirmed)","guide":"","link":null},{"id":"DLV_13","sec":"Status review","t":"Health, Safety and Environment (HSE) annual management review","lead":"People and Technology","freq":"Annual","due":"02-01","dueText":"1 Feb","guide":"","link":null},{"id":"DLV_14","sec":"Status review","t":"Annual IT Inventory Report","lead":"IT","freq":"Annual","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_15","sec":"Status review","t":"Annual IT Standards Deviation Report","lead":"IT","freq":"Annual","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_16","sec":"Document and tool update","t":"Environment Statement of Commitment","lead":"Environment","freq":"Every second year","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_17","sec":"Document and tool update","t":"Crisis Management Plan","lead":"Security","freq":"Annual","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_18","sec":"Document and tool update","t":"Pre travel briefing and in country security briefing","lead":"Security","freq":"Annual","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_19","sec":"Document and tool update","t":"Country Factsheet","lead":"Communications","freq":"Annual","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_20","sec":"Document and tool update","t":"Country website page","lead":"Communications","freq":"Annual","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_21","sec":"Other – to be confirmed","t":"Financial forecast","lead":"To be confirmed","freq":"To be confirmed","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_22","sec":"Other – to be confirmed","t":"Annual budgets","lead":"To be confirmed","freq":"To be confirmed","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_23","sec":"Other – to be confirmed","t":"CO Risk assessment","lead":"To be confirmed","freq":"To be confirmed","due":null,"dueText":"","guide":"","link":null},{"id":"DLV_24","sec":"Other – to be confirmed","t":"Overriding rules (HR)","lead":"To be confirmed","freq":"To be confirmed","due":null,"dueText":"","guide":"","link":null}]};
+const ITEMS = DATA.items, SECTIONS = DATA.sections;
+const bySec = c => ITEMS.filter(i => i.code === c);
+const secName = s => `${s.num}-${s.name}`;
+const LABEL = {"1":"Not in compliance","2":"Partially in compliance","3":"Fully in compliance","na":"N/A"};
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const lbl = (list, v) => (list.find(x => x.v === v) || {}).l || v || "";
+const DEMO = !CONFIG.LAYER_URL;
+const docIcon = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 1.5h5.5L13 5v9.5H4z"/><path d="M9.5 1.5V5H13"/></svg>';
+
+/* ---------- safe storage ---------- */
+const mem = {};
+const LS = {
+  get(k){ try { const v = localStorage.getItem(k); return v == null ? (mem[k] ?? null) : JSON.parse(v); } catch(e){ return mem[k] ?? null; } },
+  set(k,v){ mem[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} },
+  del(k){ delete mem[k]; try { localStorage.removeItem(k); } catch(e){} }
+};
+function toast(m){ const t = document.getElementById("toast"); t.textContent = m; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 3000); }
+
+/* ---------- field lists ---------- */
+const DATE_FIELDS = new Set(["submitted_at", "dlv_edited_at", ...SECTIONS.map(s => s.code + "_edited_at"), ...DATA.deliverables.map(d => d.id + "_date")]);
+const ALL_FIELDS = ["country","assessment_year","respondent_role","respondent_name","respondent_email","submission_status","cd_comment",
+  "last_section","submitted_by","submitted_at","ho_review_status","ho_review_comment",
+  "total_red","total_amber","total_green","total_na","total_done","overall_avg","overall_rag"];
+ITEMS.forEach(i => ALL_FIELDS.push(i.id, i.id+"_comment"));
+SECTIONS.forEach(s => ["red","amber","green","na","done","avg","rag","edited_by","edited_at"].forEach(x => ALL_FIELDS.push(s.code+"_"+x)));
+DATA.deliverables.forEach(d => ALL_FIELDS.push(d.id, d.id+"_link", d.id+"_comment", d.id+"_date"));
+ALL_FIELDS.push("dlv_edited_by", "dlv_edited_at");
+
+/* ================= AUTH (ArcGIS OAuth 2.0 with PKCE) ================= */
+const Auth = {
+  get(){ return LS.get("coar-auth"); },
+  valid(){ const a = this.get(); return a && a.token && a.expires > Date.now() + 60000; },
+  async start(){
+    const verifier = b64url(crypto.getRandomValues(new Uint8Array(48)));
+    const challenge = b64url(new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier))));
+    const state = b64url(crypto.getRandomValues(new Uint8Array(12)));
+    LS.set("coar-pkce", {verifier, state});
+    const url = `${CONFIG.PORTAL_URL}/sharing/rest/oauth2/authorize?` + new URLSearchParams({client_id:CONFIG.CLIENT_ID, response_type:"code", redirect_uri:CONFIG.REDIRECT_URI, code_challenge:challenge, code_challenge_method:"S256", state, expiration:"20160"});
+    if (window.top !== window.self) {            // inside SharePoint iframe: sign in through a popup
+      const w = window.open(url, "coar-login", "width=520,height=720");
+      if (!w) { renderSignIn("Your browser blocked the sign-in window. Allow pop-ups for this page and try again."); return; }
+    } else location.assign(url);
+  },
+  async exchange(code, state){
+    const p = LS.get("coar-pkce");
+    if (!p || p.state !== state) throw new Error("Sign-in could not be verified. Please try again.");
+    const r = await postForm(`${CONFIG.PORTAL_URL}/sharing/rest/oauth2/token`, {client_id:CONFIG.CLIENT_ID, grant_type:"authorization_code", code, redirect_uri:CONFIG.REDIRECT_URI, code_verifier:p.verifier});
+    LS.del("coar-pkce"); this.store(r);
+  },
+  async refresh(){
+    const a = this.get(); if (!a || !a.refresh) return false;
+    try { const r = await postForm(`${CONFIG.PORTAL_URL}/sharing/rest/oauth2/token`, {client_id:CONFIG.CLIENT_ID, grant_type:"refresh_token", refresh_token:a.refresh}); this.store({...r, refresh_token: r.refresh_token || a.refresh}); return true; }
+    catch(e){ return false; }
+  },
+  store(r){ LS.set("coar-auth", {token:r.access_token, expires:Date.now() + r.expires_in*1000, refresh:r.refresh_token, username:r.username}); },
+  async token(){ if (this.valid()) return this.get().token; if (await this.refresh()) return this.get().token; throw Object.assign(new Error("Your session has expired. Sign in again to keep saving."), {auth:true}); },
+  signOut(){ LS.del("coar-auth"); location.reload(); }
+};
+function b64url(bytes){ let s = ""; bytes.forEach(b => s += String.fromCharCode(b)); return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+async function postForm(url, params){
+  const res = await fetch(url, {method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded"}, body:new URLSearchParams({f:"json", ...params})});
+  const j = await res.json();
+  if (j.error) { const e = new Error(j.error.message || "Request failed"); e.code = j.error.code; if (j.error.code === 498 || j.error.code === 499) e.auth = true; throw e; }
+  return j;
+}
+async function agsPost(url, params){ return postForm(url, {...params, token: await Auth.token()}); }
+
+/* ================= DATA STORES ================= */
+class ArcGISStore {
+  constructor(url){ this.url = url.replace(/\/$/, ""); }
+  async init(){
+    let info;
+    try { info = await agsPost(this.url, {}); }
+    catch(e) { if (e.auth) throw e; throw new Error("You don't have access to this country office's assessment, or its address in config.js is wrong. Ask HO to check that you are in the right COAR group."); }
+    this.fields = {}; this.types = {};
+    info.fields.forEach(f => { this.fields[f.name.toLowerCase()] = f.name; this.types[f.name] = f.type; });
+    this.oid = info.objectIdField || (info.fields.find(f => f.type === "esriFieldTypeOID") || {}).name;
+    this.missing = ["country","assessment_year","submission_status",ITEMS[0].id,"last_section",SECTIONS[0].code+"_edited_by"].filter(f => !this.fields[f.toLowerCase()]);
+    if (this.missing.length) throw new Error("The layer is missing fields this form needs: " + this.missing.join(", ") + ". Republish the survey from the latest form spreadsheet.");
+  }
+  f(n){ return this.fields[n.toLowerCase()]; }
+  toLayer(attrs){ const o = {}; for (const [k,v] of Object.entries(attrs)) { const f = this.f(k); if (!f) continue;
+      if (this.types[f] === "esriFieldTypeDate") o[f] = v ? (typeof v === "number" ? v : Date.parse(v + "T12:00:00Z")) : null;
+      else if (/Integer|Double|Single/.test(this.types[f])) o[f] = (v === "" || v == null) ? null : Number(v);
+      else o[f] = v === "" ? null : v; }
+    return o; }
+  fromLayer(a){ const o = {}; ALL_FIELDS.forEach(k => { const f = this.f(k); if (!f) return; let v = a[f];
+      o[k] = v; }); return o; }
+  async findAll(){
+    const out = []; let offset = 0;
+    for (;;) {
+      const r = await agsPost(this.url + "/query", {where:"1=1", outFields:"*", orderByFields:this.oid + " ASC", returnGeometry:"false", resultOffset:String(offset), resultRecordCount:"1000"});
+      (r.features || []).forEach(f => out.push(this.fromLayer(f.attributes)));
+      if (!r.exceededTransferLimit || !(r.features || []).length) break; offset += r.features.length;
+    }
+    return out;
+  }
+  async find(country, year){
+    const where = `${this.f("country")}='${country.replace(/'/g,"''")}' AND ${this.f("assessment_year")}='${String(year).replace(/'/g,"''")}'`;
+    const r = await agsPost(this.url + "/query", {where, outFields:"*", orderByFields:this.oid + " ASC", returnGeometry:"false"});
+    const fs = r.features || [], st = this.f("submission_status");
+    const filled = f => ITEMS.filter(it => { const k = this.f(it.id); return k && f.attributes[k] != null && f.attributes[k] !== ""; }).length;
+    const ft = fs.slice().sort((x, y) => (y.attributes[st] === "submitted") - (x.attributes[st] === "submitted") || filled(y) - filled(x) || x.attributes[this.oid] - y.attributes[this.oid])[0];
+    return ft ? {oid: ft.attributes[this.oid], attrs: this.fromLayer(ft.attributes)} : null;
+  }
+  async create(attrs){
+    const r = await agsPost(this.url + "/applyEdits", {adds: JSON.stringify([{attributes: this.toLayer(attrs)}])});
+    const x = r.addResults && r.addResults[0];
+    if (!x || !x.success) throw new Error((x && x.error && x.error.description) || "Could not create the assessment record.");
+    return x.objectId;
+  }
+  async update(oid, attrs){
+    const a = this.toLayer(attrs); a[this.oid] = oid;
+    const r = await agsPost(this.url + "/applyEdits", {updates: JSON.stringify([{attributes: a}])});
+    const x = r.updateResults && r.updateResults[0];
+    if (!x || !x.success) throw new Error((x && x.error && x.error.description) || "Save failed.");
+  }
+}
+class DemoStore {
+  constructor(){ this.key = "coar-demo-db2"; if (!LS.get(this.key)) LS.set(this.key, seedDemo()); }
+  db(){ return LS.get(this.key); }
+  async init(){ await wait(250); }
+  async find(country, year){ await wait(300); const r = this.db().records.find(x => x.attrs.country === country && String(x.attrs.assessment_year) === String(year)); return r ? JSON.parse(JSON.stringify(r)) : null; }
+  async create(attrs){ await wait(300); const db = this.db(); const oid = db.next++; db.records.push({oid, attrs:{...attrs}}); LS.set(this.key, db); return oid; }
+  async update(oid, attrs){ await wait(450); if (APP.demoOffline) throw new Error("No connection"); const db = this.db(); const r = db.records.find(x => x.oid === oid); Object.assign(r.attrs, attrs); LS.set(this.key, db); }
+}
+const wait = ms => new Promise(r => setTimeout(r, ms));
+function seedDemo(){
+  const recs = []; let next = 1;
+  const mk = (country, year, secs, who, status) => {
+    const a = {country, assessment_year:year, submission_status:status, respondent_role:"country_director", respondent_name:who};
+    let seed = year * 7 + country.length;
+    const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    secs.forEach(code => { bySec(code).forEach(it => { const x = rnd(); const s = x < .15 ? "1" : x < .42 ? "2" : "3"; a[it.id] = s;
+        if (s !== "3") a[it.id+"_comment"] = "Partly documented"; });
+      Object.assign(a, calcSection(a, code)); a[code+"_edited_by"] = who; a[code+"_edited_at"] = Date.UTC(2026, 8, 24, 10, 15); });
+    Object.assign(a, calcTotals(a)); a.last_section = secs.length;
+    recs.push({oid: next++, attrs:a});
+  };
+  mk("bosnia_and_herzegovina", "2027", ["SMS","INT","DON","COM"], "Amra Hodžić", "draft");
+  ["DLV_01","DLV_04","DLV_05","DLV_09","DLV_13"].forEach((id, i) => { const a = recs[0].attrs; a[id] = i < 3 ? "yes" : "partially"; if (i < 3) a[id + "_link"] = "https://npaid.sharepoint.com/sites/example/" + id; a[id + "_date"] = Date.UTC(2026, 9, 2 + i, 9); a.dlv_edited_by = "Amra Hodžić"; a.dlv_edited_at = Date.UTC(2026, 9, 6, 9); });
+  mk("bosnia_and_herzegovina", "2026", SECTIONS.map(s => s.code), "Amra Hodžić", "submitted");
+  return {next, records: recs};
+}
+
+/* ================= SCORING ================= */
+function calcSection(a, code){
+  let r=0, am=0, g=0, na=0;
+  bySec(code).forEach(it => { const v = a[it.id]; if (v === "1") r++; else if (v === "2") am++; else if (v === "3") g++; else if (v === "na") na++; });
+  const n = r + am + g, avg = n ? Math.round((r + am*2 + g*3) / n * 100) / 100 : null;
+  return {[code+"_red"]:r, [code+"_amber"]:am, [code+"_green"]:g, [code+"_na"]:na, [code+"_done"]:r+am+g+na, [code+"_avg"]:avg, [code+"_rag"]:rag(avg)};
+}
+function calcTotals(a){
+  const t = {red:0, amber:0, green:0, na:0};
+  SECTIONS.forEach(s => { const c = calcSection(a, s.code); t.red += c[s.code+"_red"]; t.amber += c[s.code+"_amber"]; t.green += c[s.code+"_green"]; t.na += c[s.code+"_na"]; });
+  const n = t.red + t.amber + t.green, avg = n ? Math.round((t.red + t.amber*2 + t.green*3) / n * 100) / 100 : null;
+  return {total_red:t.red, total_amber:t.amber, total_green:t.green, total_na:t.na, total_done:n + t.na, overall_avg:avg, overall_rag:rag(avg)};
+}
+const rag = v => v == null ? "" : v >= 2.5 ? "Green" : v >= 1.75 ? "Amber" : "Red";
+const answered = (a, it) => a[it.id] != null && a[it.id] !== "";
+function secProgress(a, code){ const its = bySec(code); const c = calcSection(a, code); return {...c, n: its.length, done: c[code+"_done"], r:c[code+"_red"], am:c[code+"_amber"], g:c[code+"_green"], na:c[code+"_na"]}; }
+const fmtDate = ms => ms ? new Date(ms).toLocaleString(undefined, {day:"numeric", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit"}) : "";
+
+/* ================= APP STATE ================= */
+const APP = { user:null, store:null, country:null, year:CONFIG.DEFAULT_YEAR, role:null, oid:null, rec:{}, prev:{}, pending:{}, sec:0,
+  saveState:"saved", lastSaved:null, timer:null, retry:null, saving:false, demoOffline:false, confirming:false, welcome:null };
+
+function readOnly(){ return APP.rec.submission_status === "submitted"; }
+function pendingKey(){ return `coar-pending:${APP.country}:${APP.year}`; }
+
+function setSave(state, text){
+  APP.saveState = state; const el = document.getElementById("savest"); el.hidden = false; el.dataset.s = state;
+  document.getElementById("savest-t").textContent = text || ({saved: APP.lastSaved ? "All changes saved · " + new Date(APP.lastSaved).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}) : "All changes saved", saving:"Saving…", offline:"Not saved yet – offline, retrying", error:"Not saved – sign in again"})[state];
+}
+
+function setField(name, value, code){
+  if (readOnly()) return;
+  APP.rec[name] = value; APP.pending[name] = value;
+  if (code) {
+    const stamp = {[code+"_edited_by"]: APP.user.name, [code+"_edited_at"]: Date.now()};
+    Object.assign(APP.rec, stamp, calcSection(APP.rec, code)); Object.assign(APP.pending, stamp, calcSection(APP.rec, code));
+    const t = calcTotals(APP.rec); Object.assign(APP.rec, t); Object.assign(APP.pending, t);
+  }
+  LS.set(pendingKey(), APP.pending);
+  setSave("saving", "Unsaved changes…");
+  clearTimeout(APP.timer); APP.timer = setTimeout(flush, 1200);
+}
+
+async function flush(){
+  clearTimeout(APP.timer);
+  if (APP.saving) { APP.timer = setTimeout(flush, 800); return true; }
+  const batch = APP.pending; if (!Object.keys(batch).length) { if (APP.saveState !== "saved") setSave("saved"); return true; }
+  APP.pending = {}; APP.saving = true; setSave("saving");
+  try {
+    await APP.store.update(APP.oid, batch);
+    APP.lastSaved = Date.now(); APP.saving = false;
+    if (!Object.keys(APP.pending).length) { LS.del(pendingKey()); setSave("saved"); } else LS.set(pendingKey(), APP.pending);
+    clearTimeout(APP.retry); return true;
+  } catch(e) {
+    APP.saving = false; APP.pending = {...batch, ...APP.pending}; LS.set(pendingKey(), APP.pending);
+    if (e.auth) { setSave("error"); renderSignIn(e.message, true); return false; }
+    setSave("offline"); clearTimeout(APP.retry); APP.retry = setTimeout(flush, 15000); return false;
+  }
+}
+window.addEventListener("online", () => flush());
+window.addEventListener("beforeunload", e => { if (Object.keys(APP.pending).length || APP.saving) { e.preventDefault(); e.returnValue = ""; } });
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flush(); });
+
+/* ================= SCREENS ================= */
+const $app = () => document.getElementById("app");
+
+function renderSignIn(msg, keepWork){
+  $app().innerHTML = `<div class="card">
+    <div><div class="eyebrow">Annual self-assessment</div><h1>Sign in to continue</h1></div>
+    <p>Use your organisation's ArcGIS account. Your answers are saved to the country office's assessment record as you go.</p>
+    ${msg ? `<p class="note ${keepWork ? "warn" : "err"}">${esc(msg)}${keepWork ? " Your unsaved answers are kept in this browser and will be saved after you sign in." : ""}</p>` : ""}
+    ${CONFIG.CLIENT_ID ? `<div><button class="btn pri" id="signin">Sign in with ArcGIS</button></div>` : `<p class="note err">This page is not configured yet: CLIENT_ID is empty. See the setup guide.</p>`}
+  </div>`;
+  const b = document.getElementById("signin"); if (b) b.onclick = () => Auth.start();
+}
+
+function renderStart(err){
+  const last = LS.get("coar-last") || {};
+  const country = APP.country || last.country || "";
+  const role = APP.role || last.role || "";
+  $app().innerHTML = `<div class="card">
+    <div><div class="eyebrow">Annual self-assessment</div><h1>Country Office Annual Requirements Checklist</h1></div>
+    <p>Choose your country office and the assessment year. If your office has already started, you continue where you left off. Answers are saved automatically, and several colleagues can work on different sections.</p>
+    ${DEMO ? `<p class="note">Demo mode: nothing is sent to ArcGIS; answers stay in this browser. Bosnia and Herzegovina has a draft already started, so you can see how resuming works.</p>` : ""}
+    ${err ? `<p class="note err">${esc(err)}</p>` : ""}
+    <div class="grid3">
+      <div class="fld"><label for="s-country">Country office</label><select id="s-country"><option value="">Select…</option>${DATA.countries.map(c => `<option value="${c.v}" ${c.v===country?"selected":""}>${esc(c.l)}</option>`).join("")}</select></div>
+      <div class="fld"><label for="s-year">Assessment year</label><select id="s-year">${DATA.years.map(y => `<option ${y===APP.year?"selected":""}>${y}</option>`).join("")}</select></div>
+      <div class="fld"><label for="s-role">Your role</label><select id="s-role"><option value="">Select…</option>${DATA.roles.map(r => `<option value="${r.v}" ${r.v===role?"selected":""}>${esc(r.l)}</option>`).join("")}</select></div>
+    </div>
+    <div><button class="btn pri" id="open">Open assessment</button></div>
+  </div>`;
+  document.getElementById("open").onclick = async () => {
+    const c = document.getElementById("s-country").value, y = document.getElementById("s-year").value, r = document.getElementById("s-role").value;
+    if (!c || !r) { renderStart("Select your country office and your role."); return; }
+    APP.country = c; APP.year = y; APP.role = r; LS.set("coar-last", {country:c, role:r});
+    document.getElementById("open").disabled = true; document.getElementById("open").textContent = "Opening…";
+    try { await openAssessment(); } catch(e) { if (e.auth) renderSignIn(e.message); else renderStart(e.message); }
+  };
+}
+
+async function openAssessment(){
+  const url = DEMO ? null : (CONFIG.COUNTRY_LAYER_URLS[APP.country] || CONFIG.LAYER_URL);
+  APP.store = DEMO ? new DemoStore() : new ArcGISStore(url);
+  await APP.store.init();
+  let rec = await APP.store.find(APP.country, APP.year);
+  let isNew = false;
+  if (!rec) {
+    const attrs = {country:APP.country, assessment_year:APP.year, submission_status:"draft", ho_review_status:"not_reviewed", respondent_role:APP.role, respondent_name:APP.user.name, respondent_email:APP.user.email, last_section:0};
+    await APP.store.create(attrs);
+    rec = await APP.store.find(APP.country, APP.year);   // re-read: if two people created at once, everyone uses the oldest record
+    isNew = true;
+  }
+  APP.oid = rec.oid; APP.rec = rec.attrs;
+  const prevRec = await APP.store.find(APP.country, String(Number(APP.year) - 1)).catch(() => null);
+  APP.prev = prevRec ? prevRec.attrs : {};
+  // restore anything that did not reach the server last time
+  const backup = LS.get(pendingKey());
+  APP.pending = {};
+  if (backup && Object.keys(backup).length) { const keep = readOnly() ? Object.fromEntries(Object.entries(backup).filter(([k]) => /^(DLV_|dlv_)/.test(k))) : backup;
+    Object.assign(APP.rec, keep); APP.pending = {...keep}; }
+  const done = ITEMS.filter(it => answered(APP.rec, it)).length;
+  const firstOpen = SECTIONS.findIndex(s => secProgress(APP.rec, s.code).done < bySec(s.code).length);
+  const lastSec = Number(APP.rec.last_section);
+  APP.sec = readOnly() ? SECTIONS.length : (Number.isFinite(lastSec) && lastSec >= 0 && lastSec <= SECTIONS.length && APP.rec.last_section != null ? lastSec : Math.max(0, firstOpen));
+  const lastEdit = SECTIONS.map(s => ({t: APP.rec[s.code+"_edited_at"], by: APP.rec[s.code+"_edited_by"]})).filter(x => x.t).sort((a,b) => b.t - a.t)[0];
+  APP.welcome = isNew ? {isNew:true} : {done, lastEdit};
+  APP.lastSaved = Date.now();
+  if (!readOnly()) { APP.rec.respondent_role = APP.role; APP.pending.respondent_role = APP.role; APP.pending.respondent_name = APP.user.name; if (APP.user.email) APP.pending.respondent_email = APP.user.email; }
+  if (Object.keys(APP.pending).length) flush();
+  setSave(Object.keys(APP.pending).length ? "saving" : "saved");
+  document.getElementById("brand-sub").textContent = `${lbl(DATA.countries, APP.country)} · ${APP.year}`;
+  showMain();
+}
+
+function goSection(i){
+  APP.sec = Math.max(0, Math.min(SECTIONS.length, i)); APP.confirming = false; APP.welcome = null;
+  if (!readOnly()) { APP.rec.last_section = APP.sec; APP.pending.last_section = APP.sec; LS.set(pendingKey(), APP.pending); flush(); }
+  renderForm(); window.scrollTo({top:0});
+}
+
+function bars(p){ const t = p.n; const seg = (n, c) => n ? `<i style="width:${n/t*100}%;background:var(--${c})"></i>` : ""; return seg(p.r,"red") + seg(p.am,"amber") + seg(p.g,"green") + seg(p.na,"na"); }
+
+function renderForm(){
+  const a = APP.rec, ro = readOnly(), isReview = APP.sec === SECTIONS.length;
+  const done = ITEMS.filter(it => answered(a, it)).length, pct = Math.round(done / ITEMS.length * 100);
+  let welcome = "";
+  if (APP.welcome && !ro) welcome = APP.welcome.isNew
+    ? `<p class="note ok">A new ${esc(APP.year)} assessment was started for ${esc(lbl(DATA.countries, APP.country))}. Your answers save automatically; you can close this page and come back at any time.</p>`
+    : `<p class="note">Welcome back. ${APP.welcome.done} of ${ITEMS.length} requirements are answered${APP.welcome.lastEdit ? `; last change by ${esc(APP.welcome.lastEdit.by)} on ${fmtDate(APP.welcome.lastEdit.t)}` : ""}. You are in section ${Math.min(APP.sec + 1, SECTIONS.length)}.</p>`;
+  $app().innerHTML = `
+  ${DEMO ? `<div class="demo-bar"><b>Demo controls</b><label><input type="checkbox" id="d-off" ${APP.demoOffline?"checked":""}> Simulate lost connection</label><button class="linkbtn" id="d-reset" style="color:var(--accent)">Reset demo data</button><span>Reload the page to see the form resume where you left off.</span></div>` : ""}
+  <div class="form-grid">
+    <nav class="rail" aria-label="Sections">
+      <h3>Sections</h3>
+      ${SECTIONS.map((s, i) => { const p = secProgress(a, s.code);
+        return `<button data-go="${i}" aria-current="${i===APP.sec}"><span class="nm">${esc(secName(s))}</span><span class="ct">${p.done}/${p.n}</span><span class="minibar">${bars(p)}</span></button>`; }).join("")}
+      <button data-go="${SECTIONS.length}" aria-current="${isReview}"><span class="nm"><b>${ro ? "Summary" : "Review and submit"}</b></span><span class="ct">${pct}%</span></button>
+    </nav>
+    <div style="min-width:0">
+      <div class="hero">
+        <div class="hero-top">
+          <div><div class="eyebrow">${esc(lbl(DATA.countries, APP.country))} · ${esc(APP.year)} · ${esc(lbl(DATA.roles, APP.role))}</div><h1>Country Office Annual Requirements Checklist</h1></div>
+          <button class="btn" id="change">Change country or year</button>
+        </div>
+        ${ro ? `<p class="note ok">Submitted to HO${a.submitted_by ? ` by ${esc(a.submitted_by)}` : ""}${a.submitted_at ? ` on ${fmtDate(a.submitted_at)}` : ""}. This assessment is now read-only. Contact HO if it needs to be reopened.</p>` : welcome}
+        <div class="legend">
+          <span><i class="dot" style="background:var(--red)"></i>1 · Not in compliance</span>
+          <span><i class="dot" style="background:var(--amber)"></i>2 · Partially in compliance</span>
+          <span><i class="dot" style="background:var(--green)"></i>3 · Fully in compliance</span>
+          <span><i class="dot" style="background:var(--na)"></i>N/A · Does not apply this year</span>
+        </div>
+        <div class="progress"><span>${done} of ${ITEMS.length} answered</span><span class="bar"><i style="width:${pct}%"></i></span><span>${pct}%</span></div>
+      </div>
+      <div class="rail-sel fld"><label for="f-jump">Go to section</label><select id="f-jump">${SECTIONS.map((s, i) => { const p = secProgress(a, s.code); return `<option value="${i}" ${i===APP.sec?"selected":""}>${esc(secName(s))} (${p.done}/${p.n})</option>`; }).join("")}<option value="${SECTIONS.length}" ${isReview?"selected":""}>${ro ? "Summary" : "Review and submit"}</option></select></div>
+      ${isReview ? renderReview() : renderSection(SECTIONS[APP.sec])}
+    </div>
+  </div>`;
+  bindForm();
+}
+
+function renderSection(s){
+  const a = APP.rec, ro = readOnly(), p = secProgress(a, s.code);
+  let lastSub = null;
+  const html = bySec(s.code).map(it => {
+    let subH = ""; if (it.sub && it.sub !== lastSub) { subH = `<h3 class="sub-h">${esc(it.sub)}</h3>`; lastSub = it.sub; }
+    const v = a[it.id] || "", pv = APP.prev[it.id];
+    const docs = it.links.length ? it.links.map(([t,u]) => `<a class="doc" href="${esc(u)}" target="_blank" rel="noopener" title="${esc(t)}">${docIcon}<span>${esc(t)}</span></a>`).join("")
+      : `<span class="doc gap" title="${esc(it.gov)}">${docIcon}<span>${it.nogov ? "No governing document yet · HO to provide" : esc(it.gov)}</span></span>`;
+    const dis = ro ? "disabled" : "";
+    const follow = `<div class="follow one"><div class="fld"><label for="${it.id}_comment">Comments / link to evidence (optional)</label><input id="${it.id}_comment" data-f="${it.id}_comment" value="${esc(a[it.id+"_comment"])}" placeholder="Add a note or paste a SharePoint link to evidence" ${dis}></div></div>`;
+    return `${subH}<article class="q" data-s="${v}">
+      <div class="q-top"><span class="q-id mono">${it.id.replace("_","-")}</span><div class="q-text">${esc(it.q)}</div>${pv ? `<span class="prev">Last year: ${esc(pv === "na" ? "N/A" : pv)}</span>` : ""}</div>
+      ${it.hint ? `<div class="hint">Also tell us: ${esc(it.hint)}</div>` : ""}
+      <div class="docs">${docs}</div>
+      <div class="choices" role="group" aria-label="Score for ${it.id.replace("_","-")}">
+        ${["1","2","3"].map(x => `<button class="ch" data-v="${x}" data-id="${it.id}" aria-pressed="${v===x}" ${dis}><b>${x}</b><small>${LABEL[x]}</small></button>`).join("")}
+        <button class="ch" data-v="na" data-id="${it.id}" aria-pressed="${v==="na"}" ${dis}><small>N/A</small></button>
+      </div>
+      ${follow}
+    </article>`;
+  }).join("");
+  const ed = a[s.code+"_edited_by"] ? `Last edited by ${esc(a[s.code+"_edited_by"])} · ${fmtDate(a[s.code+"_edited_at"])}` : "Not started yet";
+  return `<div class="sec-head"><div><div class="eyebrow">Section ${s.num} of ${SECTIONS.length} · Suggested respondent: ${esc(s.respondent)}</div><h2>${esc(secName(s))}</h2><div class="edited">${ed}</div></div>
+    <div class="legend">${p.r?`<span class="pill r">${p.r} red</span>`:""}${p.am?`<span class="pill a">${p.am} amber</span>`:""}${p.g?`<span class="pill g">${p.g} green</span>`:""}${p.n-p.done?`<span class="pill n">${p.n-p.done} to answer</span>`:""}</div></div>
+    ${html}
+    <div class="nav-btns">
+      <button class="btn" data-go="${APP.sec-1}" ${APP.sec===0?"disabled":""}>← Previous section</button>
+      ${ro ? "" : `<button class="btn" id="savenow">Save now</button>`}
+      <button class="btn pri" data-go="${APP.sec+1}">${APP.sec===SECTIONS.length-1 ? (ro ? "Summary →" : "Review and submit →") : "Next section →"}</button>
+    </div>`;
+}
+
+function renderReview(){
+  const a = APP.rec, ro = readOnly();
+  const done = ITEMS.filter(it => answered(a, it)).length, unanswered = ITEMS.filter(it => !answered(a, it));
+  const canSubmit = CONFIG.SUBMIT_ROLES.includes(APP.role), complete = !unanswered.length;
+  const jump = list => list.slice(0, 12).map(it => `<button class="jump" data-goitem="${it.code}">${it.id.replace("_","-")}</button>`).join(", ") + (list.length > 12 ? ` and ${list.length - 12} more` : "");
+  const ov = calcTotals(a).overall_avg, rc = {Green:"g", Amber:"a", Red:"r"}[rag(ov)] || "n";
+  return `<div class="sec-head"><div><div class="eyebrow">${ro ? "Submitted assessment" : "Final step"}</div><h2>${ro ? "Summary" : "Review and submit"}</h2></div>
+    <span class="pill ${rc}">Overall compliance ${fp(ov != null ? Number(ov) : null)}${rag(ov) ? " · " + rag(ov) : ""}</span></div>
+    ${!ro && unanswered.length ? `<p class="note warn">${unanswered.length} ${unanswered.length===1?"requirement is":"requirements are"} not answered yet: ${jump(unanswered)}</p>` : ""}
+    <div class="review">${SECTIONS.map((s, i) => { const p = secProgress(a, s.code);
+      return `<div class="rv-row"><div><b>${esc(secName(s))}</b><div class="edited">${p.done}/${p.n} answered${a[s.code+"_edited_by"] ? ` · ${esc(a[s.code+"_edited_by"])}, ${fmtDate(a[s.code+"_edited_at"])}` : ""}</div></div>
+        <div class="stack">${bars(p)}</div><button class="btn" data-go="${i}">${ro ? "View" : p.done === p.n ? "Edit" : "Continue"}</button></div>`; }).join("")}</div>
+    <div class="fld" style="margin-top:16px"><label for="cd_comment">Country Director's overall comment (optional)</label><textarea id="cd_comment" data-f="cd_comment" ${ro?"disabled":""}>${esc(a.cd_comment)}</textarea></div>
+    ${ro ? "" : APP.confirming ? `<div class="confirm" style="margin-top:16px"><b>Submit the ${esc(APP.year)} assessment for ${esc(lbl(DATA.countries, APP.country))} to HO?</b><span class="muted">After submitting, the form becomes read-only for the country office. HO can reopen it if something needs correcting.</span><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn pri" id="do-submit">Yes, submit to HO</button><button class="btn" id="cancel-submit">Cancel</button></div></div>`
+      : `<div class="nav-btns"><button class="btn" data-go="${SECTIONS.length-1}">← Back</button>
+        ${canSubmit ? `<button class="btn pri" id="submit" ${complete ? "" : "disabled"}>Submit to HO</button>` : `<span class="muted" style="align-self:center">Your answers are saved. The Country Director submits the assessment to HO.</span>`}</div>
+        ${canSubmit && !complete ? `<p class="muted" style="font-size:.84rem;text-align:right">Submit becomes available when every requirement is answered.</p>` : ""}`}`;
+}
+
+function bindForm(){
+  const root = $app();
+  root.querySelectorAll("[data-go]").forEach(b => b.onclick = () => goSection(+b.dataset.go));
+  root.querySelectorAll("[data-goitem]").forEach(b => b.onclick = () => goSection(SECTIONS.findIndex(s => s.code === b.dataset.goitem)));
+  root.querySelectorAll(".ch").forEach(b => b.onclick = () => {
+    const id = b.dataset.id, val = b.dataset.v, cur = APP.rec[id];
+    const code = ITEMS.find(i => i.id === id).code;
+    setField(id, cur === val ? null : val, code);
+    const y = b.getBoundingClientRect().top; APP.welcome = null; renderForm();
+    const nb = document.querySelector(`.ch[data-id="${id}"][data-v="${val}"]`); if (nb) window.scrollBy(0, nb.getBoundingClientRect().top - y);
+  });
+  root.querySelectorAll("[data-f]").forEach(el => {
+    const f = el.dataset.f, it = ITEMS.find(i => f.startsWith(i.id + "_"));
+    const h = () => setField(f, el.value, it ? it.code : null);
+    el.addEventListener(el.tagName === "SELECT" || el.type === "date" ? "change" : "input", h);
+  });
+  const on = (id, ev, fn) => { const el = document.getElementById(id); if (el) el[ev] = fn; };
+  on("f-jump", "onchange", e => goSection(+e.target.value));
+  on("savenow", "onclick", async () => { const ok = await flush(); toast(ok ? "Saved" : "Could not save yet – your answers are kept and will be sent when the connection is back"); });
+  on("change", "onclick", async () => { await flush(); renderStart(); });
+  on("submit", "onclick", () => { APP.confirming = true; renderForm(); });
+  on("cancel-submit", "onclick", () => { APP.confirming = false; renderForm(); });
+  on("do-submit", "onclick", async () => {
+    const btn = document.getElementById("do-submit"); btn.disabled = true; btn.textContent = "Submitting…";
+    Object.assign(APP.pending, {submission_status:"submitted", submitted_by:APP.user.name, submitted_at:Date.now()});
+    const ok = await flush();
+    if (ok) { Object.assign(APP.rec, {submission_status:"submitted", submitted_by:APP.user.name, submitted_at:Date.now()}); APP.confirming = false; renderForm(); toast("Submitted to HO"); }
+    else { delete APP.pending.submission_status; delete APP.pending.submitted_by; delete APP.pending.submitted_at; btn.disabled = false; btn.textContent = "Yes, submit to HO"; toast("Could not submit – check your connection and try again"); }
+  });
+  on("d-off", "onchange", e => { APP.demoOffline = e.target.checked; if (!e.target.checked) flush(); });
+  on("d-reset", "onclick", () => { LS.del("coar-demo-db2"); LS.del(pendingKey()); LS.del("coar-last"); APP.country = null; APP.role = null; APP.pending = {}; renderStart(); document.getElementById("savest").hidden = true; });
+}
+
+/* ================= HO DASHBOARD ================= */
+const DASH = {mode:"overview", year:CONFIG.DEFAULT_YEAR, country:null, data:null, loadedAt:null, error:null};
+const SEC_COLOR = {r:"red", am:"amber", g:"green", na:"na"};
+const pct = (n, d) => d ? Math.round(n / d * 100) : 0;
+const ragClass = v => ({Green:"g", Amber:"a", Red:"r"})[rag(v)] || "x";
+// Compliance %: fully = 100%, partially = 50%, not in compliance = 0%, N/A left out. Same as (average score - 1) / 2.
+const cp = avg => avg == null ? null : (avg - 1) / 2 * 100;
+const fp = avg => avg == null ? "–" : Math.round(cp(avg)) + "%";
+const fpp = d => (d >= 0 ? "+" : "−") + Math.abs(Math.round(d * 50)) + " pts";   // change in average -> percentage points
+const dArrow = d => `<span class="delta ${d > 0.04 ? "up" : d < -0.04 ? "down" : ""}">${d > 0.04 ? "▲" : d < -0.04 ? "▼" : "■"} ${fpp(d)}</span>`;
+const THRESH = "Green 75% and above · Amber 38–74% · Red below 38%";
+
+async function loadDash(force){
+  if (DASH.data && !force) return;
+  DASH.error = null;
+  try {
+    let recs;
+    if (DEMO) recs = demoDashData();
+    else { const st = new ArcGISStore(CONFIG.LAYER_URL); try { await st.init(); } catch(e) { if (e.auth) throw e; throw new Error("The dashboard reads the main layer, which only HO reviewers can open. Ask the form administrator to add you to the COAR – HO reviewers group."); } recs = await st.findAll(); }
+    // One record per country and year. If there are several, use the submitted one (or the one with most answers) and report the duplicates.
+    const groups = {};
+    recs.forEach(a => { if (!a.country) return; const k = a.country + "|" + a.assessment_year; (groups[k] = groups[k] || []).push(a); });
+    const answeredN = a => ITEMS.filter(it => a[it.id] != null && a[it.id] !== "").length;
+    DASH.dups = []; DASH.total = recs.length;
+    DASH.data = Object.values(groups).map(g => { if (g.length > 1) DASH.dups.push({country:g[0].country, year:g[0].assessment_year, n:g.length});
+      return g.slice().sort((x, y) => (y.submission_status === "submitted") - (x.submission_status === "submitted") || answeredN(y) - answeredN(x))[0]; });
+    DASH.loadedAt = Date.now();
+  } catch(e) { DASH.error = e; }
+}
+function demoDashData(){
+  const out = []; let seed = 7;
+  const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+  const years = ["2024","2025","2026","2027"];
+  DATA.countries.forEach((c, ci) => {
+    const base = 1.75 + rnd() * 0.75, slope = (rnd() - 0.35) * 0.28;
+    years.forEach((y, yi) => {
+      if (yi === 3 && ci % 5 === 4) return;                       // not started yet
+      const partial = yi === 3 && ci % 4 === 1;                    // in progress
+      const a = {country:c.v, assessment_year:y, submission_status: partial ? "draft" : "submitted"};
+      SECTIONS.forEach((s, si) => {
+        if (partial && si > 7) return;
+        const adj = (rnd() - 0.5) * 0.7;
+        bySec(s.code).forEach(it => {
+          const v = base + slope * yi + adj + (rnd() - 0.5) * 1.3;
+          a[it.id] = rnd() < 0.04 ? "na" : v < 1.65 ? "1" : v < 2.45 ? "2" : "3";
+          if (a[it.id] === "1" && rnd() < 0.5) a[it.id + "_comment"] = "Not yet in place; plan agreed with HO";
+        });
+      });
+      if (!partial) { a.submitted_by = "Country Director"; a.submitted_at = Date.UTC(Number(y), 0, 20 + ci % 8); }
+      if (yi >= 2 && !(yi === 3 && ci % 6 === 5)) DATA.deliverables.forEach((d, di) => { const x = rnd() + (yi === 2 ? .25 : 0) + base / 10 - .2;
+        if (yi === 3 && x < .25) return; a[d.id] = x > .62 ? "yes" : x > .42 ? "partially" : "no";
+        if (a[d.id] === "yes") a[d.id + "_link"] = "https://npaid.sharepoint.com/sites/example/" + c.v + "/" + d.id;
+        if (a[d.id] === "partially" && rnd() < .5) a[d.id + "_comment"] = "Draft shared with HO"; });
+      out.push(a);
+    });
+  });
+  const db = LS.get("coar-demo-db2");                               // records entered in this browser override the examples
+  if (db && db.records) db.records.forEach(r => { const i = out.findIndex(a => a.country === r.attrs.country && String(a.assessment_year) === String(r.attrs.assessment_year)); if (i >= 0) out[i] = r.attrs; else out.push(r.attrs); });
+  return out;
+}
+const recFor = (c, y) => (DASH.data || []).find(a => a.country === c && String(a.assessment_year) === String(y));
+const statusOf = a => !a ? "Not started" : a.submission_status === "submitted" ? "Submitted" : "In progress";
+const yearsAvail = () => [...new Set([...(DASH.data || []).map(a => String(a.assessment_year)), ...DATA.years])].sort();
+
+/* ---- chart helpers (SVG) ---- */
+function donut(segs, total, size, stroke, center, sub){
+  const r = (size - stroke) / 2, C = 2 * Math.PI * r; let off = 0;
+  const arcs = segs.filter(s => s.v > 0).map(s => { const len = s.v / total * C, gap = len > 4 ? 2 : 0;
+    const el = `<circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" style="stroke:var(--${s.c})" stroke-width="${stroke}" stroke-dasharray="${Math.max(len - gap, 0.5)} ${C}" stroke-dashoffset="${-off}" data-tip="${esc(s.tip)}"/>`; off += len; return el; }).join("");
+  return `<svg class="donut" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" role="img" aria-label="${esc(segs.map(s => s.tip).join("; "))}">
+    <g transform="rotate(-90 ${size/2} ${size/2})"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" style="stroke:var(--empty)" stroke-width="${stroke}"/>${arcs}</g>
+    <text x="50%" y="${sub ? "47%" : "50%"}" text-anchor="middle" dominant-baseline="central" class="dn-c" style="font-size:${size/4.4}px">${center}</text>
+    ${sub ? `<text x="50%" y="66%" text-anchor="middle" dominant-baseline="central" class="dn-s" style="font-size:${size/11}px">${sub}</text>` : ""}</svg>`;
+}
+function segsOf(st, label){
+  const ans = st.r + st.am + st.g + st.na;
+  return [{v:st.r, c:"red", tip:`${label}: ${st.r} not in compliance (${pct(st.r, ans)}% of answered)`},
+          {v:st.am, c:"amber", tip:`${label}: ${st.am} partially (${pct(st.am, ans)}%)`},
+          {v:st.g, c:"green", tip:`${label}: ${st.g} fully in compliance (${pct(st.g, ans)}%)`},
+          {v:st.na, c:"na", tip:`${label}: ${st.na} not applicable (${pct(st.na, ans)}%)`}];
+}
+function lineChart(points){ // points: [{x:"2023", y:2.1}]
+  const W = 640, H = 260, L = 44, R = 24, T = 16, B = 34, ymin = 1, ymax = 3;
+  const xs = i => points.length === 1 ? (L + W - R) / 2 : L + i * (W - L - R) / (points.length - 1);
+  const ys = v => T + (ymax - v) / (ymax - ymin) * (H - T - B);
+  const band = (a, b, c) => `<rect x="${L}" y="${ys(b)}" width="${W - L - R}" height="${ys(a) - ys(b)}" style="fill:var(--${c}-soft)" opacity=".55"/>`;
+  const valid = points.map((p, i) => ({...p, i})).filter(p => p.y != null);
+  const path = valid.map((p, k) => `${k ? "L" : "M"}${xs(p.i).toFixed(1)},${ys(p.y).toFixed(1)}`).join(" ");
+  return `<svg viewBox="0 0 ${W} ${H}" class="lc" role="img" aria-label="Overall compliance by year">
+    ${band(1, 1.75, "red")}${band(1.75, 2.5, "amber")}${band(2.5, 3, "green")}
+    ${[1, 1.5, 2, 2.5, 3].map(v => `<line x1="${L}" x2="${W - R}" y1="${ys(v)}" y2="${ys(v)}" class="grid"/><text x="${L - 8}" y="${ys(v)}" text-anchor="end" dominant-baseline="central" class="ax">${fp(v)}</text>`).join("")}
+    ${points.map((p, i) => `<text x="${xs(i)}" y="${H - 10}" text-anchor="middle" class="ax">${p.x}</text>`).join("")}
+    <path d="${path}" fill="none" style="stroke:var(--fg)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${valid.map((p, k) => `<circle cx="${xs(p.i)}" cy="${ys(p.y)}" r="6" style="fill:var(--${({g:"green",a:"amber",r:"red"})[ragClass(p.y)]});stroke:var(--surface)" stroke-width="2" data-tip="${p.x}: overall compliance ${fp(p.y)} (${rag(p.y)})"/>${k === valid.length - 1 ? `<text x="${xs(p.i)}" y="${ys(p.y) - 14}" text-anchor="middle" class="lbl">${fp(p.y)}</text>` : ""}`).join("")}
+  </svg>`;
+}
+function stackCols(rows){ // rows: [{x, st}]
+  const W = 640, H = 220, L = 44, R = 24, T = 12, B = 34, n = rows.length, slot = (W - L - R) / Math.max(n, 1), bw = Math.min(56, slot * .5);
+  const y = p => T + (1 - p) * (H - T - B);
+  let out = [0, .25, .5, .75, 1].map(p => `<line x1="${L}" x2="${W - R}" y1="${y(p)}" y2="${y(p)}" class="grid"/><text x="${L - 8}" y="${y(p)}" text-anchor="end" dominant-baseline="central" class="ax">${p * 100}%</text>`).join("");
+  rows.forEach((row, i) => { const st = row.st, ans = st.r + st.am + st.g + st.na, cx = L + slot * i + slot / 2; let acc = 0;
+    out += `<text x="${cx}" y="${H - 10}" text-anchor="middle" class="ax">${row.x}</text>`;
+    if (!ans) return;
+    [["r","red","not in compliance"],["am","amber","partially"],["g","green","fully"],["na","na","N/A"]].forEach(([k, c, lab]) => { const v = st[k] / ans; if (!v) return;
+      const y1 = y(acc + v), h = y(acc) - y1; out += `<rect x="${cx - bw/2}" y="${y1 + 1}" width="${bw}" height="${Math.max(h - 2, 0.5)}" style="fill:var(--${c})" data-tip="${row.x}: ${st[k]} ${lab} (${Math.round(v * 100)}%)"/>`; acc += v; }); });
+  return `<svg viewBox="0 0 ${W} ${H}" class="lc" role="img" aria-label="Share of scores by year">${out}</svg>`;
+}
+const legend = () => `<div class="legend"><span><i class="dot" style="background:var(--red)"></i>1 · Not in compliance</span><span><i class="dot" style="background:var(--amber)"></i>2 · Partially</span><span><i class="dot" style="background:var(--green)"></i>3 · Fully</span><span><i class="dot" style="background:var(--na)"></i>N/A</span><span><i class="dot" style="background:var(--empty);outline:1px solid var(--line)"></i>Not answered</span></div>`;
+
+
+/* ================= DELIVERABLES ================= */
+const DLV = DATA.deliverables;
+const DLV_SECS = [...new Set(DLV.map(d => d.sec))];
+const DLV_LABEL = {yes:"Yes – delivered", partially:"Partially", no:"No – not yet"};
+const DLV_CLS = {yes:"3", partially:"2", no:"1"};
+const isUrl = s => /^https?:\/\/\S+$/i.test(String(s || "").trim());
+function dueDate(d, year){ if (!d.due) return null; const [m, dd] = d.due.split("-").map(Number); return Date.UTC(Number(year), m - 1, dd, 23, 59); }
+function dueLabel(d, year){ if (!d.due) return "No due date set"; const t = dueDate(d, year); return "Due " + new Date(t).toLocaleDateString(undefined, {day:"numeric", month:"short", year:"numeric", timeZone:"UTC"}) + (d.dueText.includes("confirm") ? " (to be confirmed)" : ""); }
+const isOverdue = (d, year, status) => { const t = dueDate(d, year); return t != null && Date.now() > t && status !== "yes"; };
+function dlvCounts(a, year){ const c = {yes:0, partially:0, no:0, none:0, overdue:0};
+  DLV.forEach(d => { const s = a ? a[d.id] : null; if (s === "yes" || s === "partially" || s === "no") c[s]++; else c.none++; if (isOverdue(d, year, s)) c.overdue++; }); return c; }
+
+function setDlv(name, value){
+  const id = name.slice(0, 6), now = Date.now();
+  const ch = {[name]: value, [id + "_date"]: now, dlv_edited_by: APP.user.name, dlv_edited_at: now};
+  Object.assign(APP.rec, ch); Object.assign(APP.pending, ch);
+  LS.set(pendingKey(), APP.pending);
+  setSave("saving", "Unsaved changes…");
+  clearTimeout(APP.timer); APP.timer = setTimeout(flush, 1200);
+}
+
+function renderDlv(){
+  const a = APP.rec, y = APP.year, c = dlvCounts(a, y), n = DLV.length;
+  const seg = (k, col) => c[k] ? `<i style="width:${c[k] / n * 100}%;background:var(--${col})"></i>` : "";
+  const noFields = !DEMO && APP.store && APP.store.fields && !APP.store.f("DLV_01");
+  $app().innerHTML = `
+  ${noFields ? `<p class="note err">The ArcGIS layer does not have the deliverable fields yet, so changes on this page cannot be saved. Ask the administrator to republish the survey from the latest form spreadsheet (version 2027.2 or later).</p>` : ""}
+  ${DEMO ? `<div class="demo-bar"><b>Demo controls</b><label><input type="checkbox" id="d-off" ${APP.demoOffline ? "checked" : ""}> Simulate lost connection</label><span>Data stays in this browser.</span></div>` : ""}
+  <div class="hero">
+    <div class="hero-top">
+      <div><div class="eyebrow">${esc(lbl(DATA.countries, APP.country))} · ${esc(y)}</div><h1>Country Office Deliverables</h1></div>
+      <button class="btn" id="change">Change country or year</button>
+    </div>
+    <p class="muted" style="margin:0">Mark each deliverable when it is done and paste the link to the document (for example on SharePoint), so HO can open it. Changes save automatically and can be made at any time of the year, also after the checklist has been submitted.</p>
+    <div class="dl-sum">
+      <span><b class="v" style="color:var(--green)">${c.yes}</b> delivered</span>
+      <span><b class="v" style="color:var(--amber)">${c.partially}</b> partially</span>
+      <span><b class="v" style="color:var(--red)">${c.no}</b> not yet</span>
+      <span><b class="v" style="color:var(--muted)">${c.none}</b> not reported</span>
+      ${c.overdue ? `<span class="pill r">${c.overdue} overdue</span>` : ""}
+    </div>
+    <div class="stack" style="height:10px">${seg("yes","green")}${seg("partially","amber")}${seg("no","red")}</div>
+    ${a.dlv_edited_by ? `<div class="edited">Last change by ${esc(a.dlv_edited_by)} · ${fmtDate(a.dlv_edited_at)}</div>` : ""}
+  </div>
+  ${DLV_SECS.map(sec => `<h2 class="dl-sec">${esc(sec)} <span class="muted">· ${DLV.filter(d => d.sec === sec).length}</span></h2>
+    ${DLV.filter(d => d.sec === sec).map(d => { const s = a[d.id] || "", link = a[d.id + "_link"] || "", over = isOverdue(d, y, s);
+      return `<article class="q dl" data-s="${DLV_CLS[s] || ""}">
+        <div class="q-top"><span class="q-id mono">${d.id.replace("_", "-")}</span><div class="q-text">${esc(d.t)}</div>${APP.prev[d.id] ? `<span class="prev">Last year: ${esc(DLV_LABEL[APP.prev[d.id]] || APP.prev[d.id])}</span>` : ""}</div>
+        <div class="docs">
+          <span class="doc">Lead: ${esc(d.lead)}</span><span class="doc">${esc(d.freq)}</span>
+          <span class="doc ${over ? "over" : ""}">${esc(dueLabel(d, y))}${over ? " · overdue" : ""}</span>
+          ${d.link ? `<a class="doc" href="${esc(d.link)}" target="_blank" rel="noopener">${docIcon}<span>${esc(d.guide)}</span></a>` : d.guide ? `<span class="doc">${docIcon}<span>${esc(d.guide)}</span></span>` : `<span class="doc gap">${docIcon}<span>Guidance to be developed by HO</span></span>`}
+        </div>
+        <div class="choices dl-ch" role="group" aria-label="Status of ${d.id.replace("_", "-")}">
+          ${["yes","partially","no"].map(v => `<button class="ch" data-v="${({yes:"3",partially:"2",no:"1"})[v]}" data-dl="${d.id}" data-dv="${v}" aria-pressed="${s === v}">${esc(DLV_LABEL[v])}</button>`).join("")}
+        </div>
+        <div class="follow dl-f">
+          <div class="fld"><label for="${d.id}_link">Link to the country office document</label>
+            <div class="lk"><input type="url" id="${d.id}_link" data-dlf="${d.id}_link" value="${esc(link)}" placeholder="https://npaid.sharepoint.com/…">${isUrl(link) ? `<a class="btn" href="${esc(link)}" target="_blank" rel="noopener">Open</a>` : ""}</div>
+            ${s === "yes" && !link ? `<span class="hint" style="color:var(--red)">Add the link so HO can open the document.</span>` : link && !isUrl(link) ? `<span class="hint" style="color:var(--red)">Paste a full web address starting with https://</span>` : ""}</div>
+          <div class="fld"><label for="${d.id}_comment">Comment (optional)</label><input id="${d.id}_comment" data-dlf="${d.id}_comment" value="${esc(a[d.id + "_comment"])}" placeholder="For example: draft shared with HO, final due in March"></div>
+        </div>
+        ${a[d.id + "_date"] ? `<div class="edited">Updated ${fmtDate(a[d.id + "_date"])}</div>` : ""}
+      </article>`; }).join("")}`).join("")}`;
+  const root = $app();
+  root.querySelectorAll("[data-dl]").forEach(b => b.onclick = () => { const id = b.dataset.dl, v = b.dataset.dv;
+    const y0 = b.getBoundingClientRect().top; setDlv(id, APP.rec[id] === v ? null : v); renderDlv();
+    const nb = document.querySelector(`[data-dl="${id}"][data-dv="${v}"]`); if (nb) window.scrollBy(0, nb.getBoundingClientRect().top - y0); });
+  root.querySelectorAll("[data-dlf]").forEach(el => { el.addEventListener("input", () => setDlv(el.dataset.dlf, el.value.trim()));
+    if (el.type === "url") el.addEventListener("change", () => { const y0 = window.scrollY; renderDlv(); window.scrollTo({top:y0}); }); });
+  const ch = document.getElementById("change"); if (ch) ch.onclick = async () => { await flush(); renderStart(); };
+  const off = document.getElementById("d-off"); if (off) off.onchange = e => { APP.demoOffline = e.target.checked; if (!e.target.checked) flush(); };
+}
+
+/* ---- dashboard view: deliverables across all offices ---- */
+function viewDeliverables(){
+  const y = String(DASH.year), now = Date.now();
+  const offices = DATA.countries.map(c => { const a = recFor(c.v, y); return {c, a, n: dlvCounts(a, y)}; });
+  const total = DATA.countries.length * DLV.length;
+  const yes = offices.reduce((s, o) => s + o.n.yes, 0), part = offices.reduce((s, o) => s + o.n.partially, 0), over = offices.reduce((s, o) => s + o.n.overdue, 0);
+  const allDone = offices.filter(o => o.n.yes === DLV.length).length, silent = offices.filter(o => o.n.none === DLV.length).length;
+  const per = DLV.map(d => { const st = {r:0, am:0, g:0, na:0, open:0}, od = [];
+    offices.forEach(o => { const s = o.a ? o.a[d.id] : null; if (s === "yes") st.g++; else if (s === "partially") st.am++; else if (s === "no") st.r++; else st.open++; if (isOverdue(d, y, s)) od.push(o.c.l); });
+    return {d, st, od, rate: st.g / DATA.countries.length}; }).sort((p, q) => p.rate - q.rate);
+  const cell = (o, d) => { const s = o.a ? o.a[d.id] : null, link = o.a ? o.a[d.id + "_link"] : "", ov = isOverdue(d, y, s);
+    const cls = s === "yes" ? "c-g" : s === "partially" ? "c-a" : s === "no" ? "c-r" : "c-x", sym = s === "yes" ? "✓" : s === "partially" ? "½" : s === "no" ? "✗" : "";
+    const tip = `${o.c.l} · ${d.t}: ${s ? DLV_LABEL[s] : "not reported"}${ov ? " · overdue" : ""}${o.a && o.a[d.id + "_comment"] ? " — “" + o.a[d.id + "_comment"] + "”" : ""}${isUrl(link) ? " · click to open the document" : ""}`;
+    return `<td class="${cls}${ov ? " ovd" : ""}" data-tip="${esc(tip)}">${isUrl(link) ? `<a href="${esc(link)}" target="_blank" rel="noopener">${sym}</a>` : sym}</td>`; };
+  return `<p class="note">Deliverables reported by each country office for ${esc(y)}. ✓ delivered · ½ partially · ✗ not yet · blank: not reported. A red outline means the due date has passed and the deliverable is not yet delivered. Click a ✓ to open the office's document.</p>
+  <div class="kpis">
+    <div class="kpi"><span class="l">Delivered across all offices</span><span class="v">${pct(yes, total)}%</span><span class="s">${yes} of ${total} · ${part} partially</span></div>
+    <div class="kpi"><span class="l">Offices with everything delivered</span><span class="v">${allDone}<small> / ${DATA.countries.length}</small></span><span class="s">all ${DLV.length} deliverables marked yes</span></div>
+    <div class="kpi"><span class="l">Overdue</span><span class="v" style="color:${over ? "var(--red)" : "inherit"}">${over}</span><span class="s">past the due date, not delivered</span></div>
+    <div class="kpi"><span class="l">Offices not reporting</span><span class="v">${silent}<small> / ${DATA.countries.length}</small></span><span class="s">no deliverable marked yet</span></div>
+  </div>
+  <div class="panel"><h2>Deliverables by office, ${esc(y)}</h2><p class="sub">Offices down the side, deliverables across, grouped by section. Hover a cell for details.</p>
+    <div class="hm-scroll"><table class="mx dlx"><thead>
+      <tr><th class="rq"></th>${DLV_SECS.map(sec => `<th class="grp" colspan="${DLV.filter(d => d.sec === sec).length}">${esc(sec)}</th>`).join("")}<th></th></tr>
+      <tr><th class="rq">Country office</th>${DLV.map(d => `<th class="vt" title="${esc(d.t)}"><span>${esc(d.t.length > 34 ? d.t.slice(0, 32) + "…" : d.t)}</span></th>`).join("")}<th class="vt"><span>Delivered</span></th></tr></thead>
+    <tbody>${offices.map(o => `<tr><td class="rq"><button class="linkbtn" data-c2="${o.c.v}" style="color:inherit;text-decoration:none">${esc(o.c.l)}</button>${!o.a ? ` <span class="st">not started</span>` : ""}</td>${DLV.map(d => cell(o, d)).join("")}<td class="cnt">${o.n.yes} / ${DLV.length}</td></tr>`).join("")}</tbody></table></div>
+    <div class="legend" style="margin-top:8px"><span><i class="dot" style="background:var(--green)"></i>✓ Delivered</span><span><i class="dot" style="background:var(--amber)"></i>½ Partially</span><span><i class="dot" style="background:var(--red)"></i>✗ Not yet</span><span><i class="dot" style="background:var(--empty);outline:1px solid var(--line)"></i>Not reported</span><span><i class="dot" style="background:var(--surface);outline:2px solid var(--red)"></i>Overdue</span></div></div>
+  <div class="panel" style="margin-top:16px"><h2>Deliverables, least delivered first</h2><p class="sub">How many of the ${DATA.countries.length} offices have delivered each one. Use it to follow up with function leads.</p>
+    <div class="hb">${per.map(p => `<div class="hb-row rqrow"><span class="hb-l" title="${esc(p.d.t)}"><span class="mono">${p.d.id.replace("_", "-")}</span> ${esc(p.d.t.length > 54 ? p.d.t.slice(0, 52) + "…" : p.d.t)} <span class="tag">${esc(p.d.lead)}</span></span>${hbar(p.st, p.d.t, p.d.t)}<span class="hb-v"><b class="pill ${p.rate >= .75 ? "g" : p.rate >= .38 ? "a" : "r"}">${p.st.g}/${DATA.countries.length}</b>${p.od.length ? `<span class="delta down" data-tip="Overdue: ${esc(p.od.join(", "))}">${p.od.length} overdue</span>` : `<span class="delta">${esc(p.d.due ? p.d.dueText : "no due date")}</span>`}</span></div>`).join("")}</div>
+    <div class="legend" style="margin-top:8px"><span><i class="dot" style="background:var(--green)"></i>Delivered</span><span><i class="dot" style="background:var(--amber)"></i>Partially</span><span><i class="dot" style="background:var(--red)"></i>Not yet</span><span><i class="dot" style="background:var(--empty);outline:1px solid var(--line)"></i>Not reported</span></div></div>`;
+}
+
+/* ---- views ---- */
+function renderDash(){
+  const root = $app();
+  if (!DASH.data && !DASH.error) { root.innerHTML = `<div class="card"><h1>Loading dashboard…</h1><p>Reading all country office assessments.</p></div>`; loadDash().then(renderDash); return; }
+  if (DASH.error) { if (DASH.error.auth) { renderSignIn(DASH.error.message, true); return; } root.innerHTML = `<div class="card"><div class="eyebrow">Dashboards</div><h1>The dashboard could not load</h1><p class="note err">${esc(DASH.error.message)}</p><div><button class="btn" id="d-retry">Try again</button></div></div>`; document.getElementById("d-retry").onclick = () => { DASH.error = null; DASH.data = null; renderDash(); }; return; }
+  if (!DASH.country) DASH.country = (APP.country && DATA.countries.some(c => c.v === APP.country)) ? APP.country : DATA.countries[0].v;
+  const years = yearsAvail();
+  const body = DASH.mode === "overview" ? viewOverview() : DASH.mode === "country" ? viewCountry() : DASH.mode === "section" ? viewSection() : DASH.mode === "dlv" ? viewDeliverables() : viewTrend();
+  root.innerHTML = `
+    <div class="dash-head"><div><div class="eyebrow">Dashboards${DEMO ? " · example data" : ""}</div><h1>${DASH.mode === "overview" ? "All country offices" : DASH.mode === "country" ? "Country office profile" : DASH.mode === "section" ? "By section" : DASH.mode === "dlv" ? "Deliverables" : "Progress over time"}</h1></div>
+      <span class="muted" style="font-size:.8rem">${DEMO ? "Example data, not connected to ArcGIS" : `${DASH.total} record${DASH.total === 1 ? "" : "s"} loaded from ArcGIS Online`} · ${DASH.loadedAt ? new Date(DASH.loadedAt).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}) : ""} · <button class="linkbtn" id="d-refresh" style="color:var(--accent)">Refresh</button></span></div>
+    <div class="filters">
+      <div class="seg" role="group" aria-label="View">${[["overview","All offices"],["country","Country profile"],["section","By section"],["trend","Trends"],["dlv","Deliverables"]].map(([k, l]) => `<button data-mode="${k}" aria-pressed="${DASH.mode === k}">${l}</button>`).join("")}</div>
+      ${DASH.mode === "section" ? `<div class="fld"><label for="d-section">Section</label><select id="d-section">${SECTIONS.map(x => `<option value="${x.code}" ${x.code === (DASH.section || SECTIONS[0].code) ? "selected" : ""}>${esc(secName(x))}</option>`).join("")}</select></div>` : ""}
+      ${DASH.mode === "country" || DASH.mode === "trend" ? `<div class="fld"><label for="d-country">Country office</label><select id="d-country">${DATA.countries.map(c => `<option value="${c.v}" ${c.v === DASH.country ? "selected" : ""}>${esc(c.l)}</option>`).join("")}</select></div>` : ""}
+      ${DASH.mode !== "trend" ? `<div class="fld"><label for="d-year">Year</label><select id="d-year">${years.map(y => `<option ${y === String(DASH.year) ? "selected" : ""}>${y}</option>`).join("")}</select></div>` : ""}
+    </div>
+    ${DASH.dups && DASH.dups.length ? `<p class="note warn">Duplicate records found: ${DASH.dups.map(d => `${esc(lbl(DATA.countries, d.country))} ${esc(d.year)} (${d.n} records)`).join(", ")}. The dashboard uses the submitted one, or the most complete. Delete the extra records in ArcGIS Online (layer › Data tab) to keep things tidy.</p>` : ""}
+    ${body}
+    <p class="muted" style="font-size:.78rem;margin-top:16px" ${DASH.mode === "dlv" ? "hidden" : ""}>How compliance is calculated: each requirement scored 3 (fully) counts 100%, 2 (partially) 50% and 1 (not in compliance) 0%; N/A and unanswered requirements are left out. ${THRESH}.</p>`;
+  root.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => { DASH.mode = b.dataset.mode; dashHash(); renderDash(); });
+  const on = (id, fn) => { const el = document.getElementById(id); if (el) el.onchange = fn; };
+  on("d-country", e => { DASH.country = e.target.value; renderDash(); });
+  on("d-year", e => { DASH.year = e.target.value; renderDash(); });
+  on("d-section", e => { DASH.section = e.target.value; dashHash(); renderDash(); });
+  root.querySelectorAll("[data-c2]").forEach(el => el.onclick = () => { DASH.country = el.dataset.c2; DASH.mode = "country"; dashHash(); renderDash(); window.scrollTo({top:0}); });
+  document.getElementById("d-refresh").onclick = async () => { DASH.data = null; renderDash(); };
+  root.querySelectorAll("[data-att]").forEach(b => b.onclick = () => { DASH.attTab = b.dataset.att;
+    root.querySelectorAll("[data-att]").forEach(x => x.setAttribute("aria-selected", x === b));
+    root.querySelectorAll("[data-list]").forEach(l => l.hidden = l.dataset.list !== b.dataset.att); });
+  root.querySelectorAll("tr[data-c]").forEach(tr => tr.onclick = () => { DASH.country = tr.dataset.c; DASH.mode = "country"; renderDash(); window.scrollTo({top:0}); });
+}
+
+function viewOverview(){
+  const y = String(DASH.year);
+  const rows = DATA.countries.map(c => { const a = recFor(c.v, y); const t = a ? calcTotals(a) : null; return {c, a, st: statusOf(a), ov: t ? t.overall_avg : null, t}; });
+  const sub = rows.filter(r => r.st === "Submitted"), prog = rows.filter(r => r.st === "In progress");
+  let s = 0, n = 0, reds = 0; sub.forEach(r => { const t = r.t; s += t.total_red + t.total_amber * 2 + t.total_green * 3; n += t.total_red + t.total_amber + t.total_green; reds += t.total_red; });
+  const avg = n ? s / n : null;
+  rows.sort((a, b) => (a.ov ?? 9) - (b.ov ?? 9));
+  return `<div class="kpis">
+      <div class="kpi"><span class="l">Submitted to HO</span><span class="v">${sub.length}<small> / ${DATA.countries.length}</small></span><span class="s">${prog.length} in progress · ${DATA.countries.length - sub.length - prog.length} not started</span></div>
+      <div class="kpi"><span class="l">Average compliance, submitted offices</span><span class="v">${fp(avg)}</span><span class="s">${avg != null ? `<span class="pill ${ragClass(avg)}">${rag(avg)}</span>` : "no submissions yet"}</span></div>
+      <div class="kpi"><span class="l">Requirements not in compliance</span><span class="v">${reds}</span><span class="s">scored 1 across submitted offices</span></div>
+      <div class="kpi"><span class="l">Offices with a red overall score</span><span class="v">${sub.filter(r => rag(r.ov) === "Red").length}</span><span class="s">overall compliance below 38%</span></div>
+    </div>
+    <div class="panel"><div class="panel-head"><div><h2>Compliance by section, ${esc(y)}</h2><p class="sub">Lowest overall first. Select a country to open its profile. ${THRESH}.</p></div></div>
+    <div class="hm-scroll"><table class="hm"><thead><tr><th class="cn">Country office</th><th>Overall</th>${SECTIONS.map(s => `<th title="${esc(secName(s))}">${s.num}<span class="full">${esc(s.name.replace(" management","").replace("Staff and Management Support","Staff & Mgmt"))}</span></th>`).join("")}</tr></thead>
+    <tbody>${rows.map(r => `<tr data-c="${r.c.v}"><td class="cname">${esc(r.c.l)}${r.st !== "Submitted" ? `<span class="st">${r.st.toLowerCase()}</span>` : ""}</td>
+      <td class="c-${ragClass(r.ov)} ov" data-tip="${esc(r.c.l)}: overall compliance ${r.ov != null ? fp(r.ov) : "no data"}">${fp(r.ov)}</td>
+      ${SECTIONS.map(s => { const st = r.a ? calcSection(r.a, s.code) : null, v = st ? st[s.code + "_avg"] : null; return `<td class="c-${ragClass(v)}" data-tip="${esc(r.c.l)} · ${esc(secName(s))}: ${v != null ? fp(v) + ` compliance (${st[s.code+"_red"]} red, ${st[s.code+"_amber"]} amber, ${st[s.code+"_green"]} green)` : "not answered"}">${fp(v)}</td>`; }).join("")}</tr>`).join("")}</tbody></table></div></div>`;
+}
+
+function viewCountry(){
+  const y = String(DASH.year), c = DASH.country, lab = lbl(DATA.countries, c), a = recFor(c, y);
+  if (!a) return `<div class="panel"><h2>${esc(lab)} has not started its ${esc(y)} assessment</h2><p class="sub">Nothing to show yet. Choose another year to see earlier results.</p></div>`;
+  const t = calcTotals(a), prev = recFor(c, String(Number(y) - 1)), pt = prev ? calcTotals(prev) : null;
+  const answered = t.total_done, n = ITEMS.length, ov = t.overall_avg;
+  const delta = (ov != null && pt && pt.overall_avg != null) ? ov - pt.overall_avg : null;
+  const reds = ITEMS.filter(it => a[it.id] === "1"), ambers = ITEMS.filter(it => a[it.id] === "2");
+  const overallSt = {r:t.total_red, am:t.total_amber, g:t.total_green, na:t.total_na};
+  return `<div class="kpis">
+      <div class="kpi"><span class="l">Overall compliance</span><span class="v">${fp(ov)}</span><span class="s">${ov != null ? `<span class="pill ${ragClass(ov)}">${rag(ov)}</span>` : ""} ${delta != null ? `${dArrow(delta)} <span class="delta">vs ${Number(y) - 1}</span>` : ""}</span></div>
+      <div class="kpi"><span class="l">Status</span><span class="v" style="font-size:1.2rem">${statusOf(a)}</span><span class="s">${a.submitted_by ? `by ${esc(a.submitted_by)}${a.submitted_at ? ", " + new Date(a.submitted_at).toLocaleDateString() : ""}` : "not yet submitted"}</span></div>
+      <div class="kpi"><span class="l">Requirements answered</span><span class="v">${answered}<small> / ${n}</small></span><span class="s">${pct(answered, n)}% complete</span></div>
+      <div class="kpi"><span class="l">Not in compliance</span><span class="v">${t.total_red}</span><span class="s">${t.total_amber} partially · ${t.total_green} fully · ${t.total_na} N/A</span></div>
+    </div>
+    <div class="two">
+      <div class="panel"><h2>All requirements</h2><p class="sub">Share of the ${n} requirements by score.</p>
+        <div class="dn-big">${donut(segsOf(overallSt, "All sections"), n, 200, 30, fp(ov), "compliance")}
+          <table class="dn-tab"><tbody>${[["red","1 · Not in compliance",t.total_red],["amber","2 · Partially",t.total_amber],["green","3 · Fully",t.total_green],["na","N/A",t.total_na],["empty","Not answered",n - answered]].map(([cc, l, v]) => `<tr><td><i class="dot" style="background:var(--${cc})${cc === "empty" ? ";outline:1px solid var(--line)" : ""}"></i>${l}</td><td class="num">${v}</td><td class="num muted">${pct(v, n)}%</td></tr>`).join("")}</tbody></table></div></div>
+      <div class="panel"><h2>Needs attention</h2><p class="sub">Requirements scored 1 or 2, grouped by section.</p>
+        <div class="att-tabs" role="tablist">
+          <button role="tab" class="att-tab r" data-att="r" aria-selected="${DASH.attTab !== "a"}"><i class="dot" style="background:var(--red)"></i>Not in compliance <b>${reds.length}</b></button>
+          <button role="tab" class="att-tab a" data-att="a" aria-selected="${DASH.attTab === "a"}"><i class="dot" style="background:var(--amber)"></i>Partially in compliance <b>${ambers.length}</b></button>
+        </div>
+        ${[["r", reds, "1"], ["a", ambers, "2"]].map(([k, list, sc]) => `<div class="att-list" data-list="${k}" ${(DASH.attTab === "a") === (k === "a") ? "" : "hidden"}>${list.length ? SECTIONS.filter(s => list.some(it => it.code === s.code)).map(s => { const its = list.filter(it => it.code === s.code);
+          return `<div class="att-sec"><div class="att-h">${esc(secName(s))} <span class="muted">· ${its.length}</span></div><ul class="att">${its.map(it => `<li class="att-${k}"><span class="mono q-id">${it.id.replace("_","-")}</span><div><div>${esc(it.q)}</div>${a[it.id + "_comment"] ? `<div class="hint">“${esc(a[it.id + "_comment"])}”</div>` : ""}</div></li>`).join("")}</ul></div>`; }).join("") : `<p class="muted">No requirements scored ${sc}.</p>`}</div>`).join("")}
+      </div>
+    </div>
+    <div class="panel" style="margin-top:16px"><div class="panel-head"><div><h2>Scores by section</h2><p class="sub">Each ring shows the share of the section's requirements by score; the percentage is the section's compliance.</p></div>${legend()}</div>
+      <div class="sec-grid">${SECTIONS.map(s => { const st = calcSection(a, s.code), m = bySec(s.code).length, v = st[s.code+"_avg"], ps = prev ? calcSection(prev, s.code)[s.code+"_avg"] : null, d = (v != null && ps != null) ? v - ps : null;
+        return `<div class="sec-card">${donut(segsOf({r:st[s.code+"_red"], am:st[s.code+"_amber"], g:st[s.code+"_green"], na:st[s.code+"_na"]}, secName(s)), m, 92, 14, fp(v))}
+          <div class="sc-t"><b>${esc(secName(s))}</b><span>${st[s.code+"_red"]} red · ${st[s.code+"_amber"]} amber · ${st[s.code+"_green"]} green${st[s.code+"_na"] ? ` · ${st[s.code+"_na"]} N/A` : ""}</span><span class="muted">${st[s.code+"_done"]}/${m} answered${d != null ? ` · ${dArrow(d)}` : ""}</span></div></div>`; }).join("")}</div></div>`;
+}
+
+
+/* ---- By section: one thematic area across the whole portfolio ---- */
+function hbar(st, label, tipPrefix){ // horizontal 100% bar of red/amber/green/na/unanswered
+  const tot = st.r + st.am + st.g + st.na + (st.open || 0);
+  if (!tot) return `<div class="hb-bar"></div>`;
+  const seg = (n, c, l) => n ? `<i style="flex:${n};background:var(--${c})" data-tip="${esc(tipPrefix)}: ${n} ${l} (${pct(n, tot)}%)"></i>` : "";
+  return `<div class="hb-bar" aria-label="${esc(label)}">${seg(st.r,"red","not in compliance")}${seg(st.am,"amber","partially")}${seg(st.g,"green","fully")}${seg(st.na,"na","N/A")}${seg(st.open || 0,"empty","not answered")}</div>`;
+}
+function viewSection(){
+  const y = String(DASH.year), code = DASH.section || SECTIONS[0].code, s = SECTIONS.find(x => x.code === code), its = bySec(code), py = String(Number(y) - 1);
+  // offices that have answered at least one requirement in this section this year
+  const offices = DATA.countries.map(c => { const a = recFor(c.v, y), p = recFor(c.v, py);
+    const st = a ? calcSection(a, code) : null, ps = p ? calcSection(p, code) : null;
+    const avg = st ? st[code+"_avg"] : null, pavg = ps ? ps[code+"_avg"] : null;
+    return {c, a, st: st ? {r:st[code+"_red"], am:st[code+"_amber"], g:st[code+"_green"], na:st[code+"_na"], open: its.length - st[code+"_done"]} : null,
+      avg, pavg, d: (avg != null && pavg != null) ? avg - pavg : null, status: statusOf(a)}; });
+  const rep = offices.filter(o => o.avg != null);
+  if (!rep.length) return `<div class="panel"><h2>No office has answered ${esc(secName(s))} for ${esc(y)} yet</h2><p class="sub">Choose another year, or check back once offices have started.</p></div>`;
+  const avgOf = list => { let sum = 0, n = 0; list.forEach(o => { sum += o.st.r + o.st.am * 2 + o.st.g * 3; n += o.st.r + o.st.am + o.st.g; }); return n ? sum / n : null; };
+  const port = avgOf(rep);
+  const prevRep = DATA.countries.map(c => { const p = recFor(c.v, py); if (!p) return null; const ps = calcSection(p, code); return ps[code+"_avg"] != null ? {st:{r:ps[code+"_red"], am:ps[code+"_amber"], g:ps[code+"_green"]}} : null; }).filter(Boolean);
+  const pport = avgOf(prevRep), dport = (port != null && pport != null) ? port - pport : null;
+  const nR = rep.filter(o => rag(o.avg) === "Red").length, nA = rep.filter(o => rag(o.avg) === "Amber").length, nG = rep.filter(o => rag(o.avg) === "Green").length;
+  // requirement-level picture across offices
+  const reqs = its.map(it => { const sc = {r:0, am:0, g:0, na:0, open:0};
+    offices.forEach(o => { if (!o.a || o.avg == null) return; const v = o.a[it.id]; if (v === "1") sc.r++; else if (v === "2") sc.am++; else if (v === "3") sc.g++; else if (v === "na") sc.na++; else sc.open++; });
+    const scored = sc.r + sc.am + sc.g; return {it, sc, scored, gap: scored ? (sc.r + sc.am * .5) / scored : 0, avg: scored ? (sc.r + sc.am * 2 + sc.g * 3) / scored : null}; });
+  const reqSorted = reqs.slice().sort((a, b) => b.gap - a.gap);
+  const offSorted = rep.slice().sort((a, b) => a.avg - b.avg);
+  const missing = offices.filter(o => o.a && o.avg == null), notStarted = offices.filter(o => !o.a);
+  // suggested actions, most important first
+  const acts = [];
+  reqSorted.filter(r => r.scored >= 3 && (r.sc.r + r.sc.am) / r.scored >= .5).slice(0, 3).forEach(r => acts.push({p:"h",
+    t:`Portfolio-wide gap: ${r.it.id.replace("_","-")}`, d:`${r.sc.r + r.sc.am} of ${r.scored} offices are not fully compliant (${r.sc.r} red, ${r.sc.am} amber): “${r.it.q.length > 110 ? r.it.q.slice(0, 108) + "…" : r.it.q}”`,
+    w: r.it.nogov ? "No governing document yet: publish HO guidance or a standard first, then offer training to all offices." : "Run a cross-office training or webinar and share a good-practice example from a green office."}));
+  const reds = offSorted.filter(o => rag(o.avg) === "Red");
+  if (reds.length) acts.push({p:"h", t:`Support ${reds.length} office${reds.length === 1 ? "" : "s"} in red`, d:reds.map(o => `${o.c.l} ${fp(o.avg)}`).join(" · "), w:"Schedule a follow-up call with each office and agree corrective actions in the master action list."});
+  const decl = offices.filter(o => o.d != null && o.d <= -0.2).sort((a, b) => a.d - b.d);
+  if (decl.length) acts.push({p:"m", t:`${decl.length} office${decl.length === 1 ? "" : "s"} declining by 10 pts or more since ${py}`, d:decl.map(o => `${o.c.l} ${fpp(o.d)}`).join(" · "), w:"Ask each office what changed (staff turnover, new systems) and whether support is needed."});
+  if (missing.length || notStarted.length) acts.push({p:"m", t:`Not reported: ${missing.length + notStarted.length} office${missing.length + notStarted.length === 1 ? "" : "s"}`, d:[...missing, ...notStarted].map(o => o.c.l).join(", ") + ".", w:"Remind the section lead in these offices to complete this section before the deadline."});
+  const champs = offSorted.filter(o => cp(o.avg) >= 90).map(o => o.c.l);
+  if (champs.length) acts.push({p:"l", t:`Good practice: ${champs.length} office${champs.length === 1 ? "" : "s"} at 90% or above`, d:champs.join(", ") + ".", w:"Ask them to share templates and routines with offices that score red or amber."});
+  const nogovN = its.filter(i => i.nogov).length;
+  if (nogovN) acts.push({p:"l", t:`${nogovN} of ${its.length} requirements have no governing document`, d:"Offices are asked to comply without an HO standard to follow.", w:"Prioritise writing guidance for the requirements with the most red and amber scores."});
+  // trend: portfolio compliance in this section, every year with data
+  const yrs = yearsAvail().filter(yy => DATA.countries.some(c => { const a = recFor(c.v, yy); return a && calcSection(a, code)[code+"_avg"] != null; }));
+  const trendPts = yrs.map(yy => ({x: yy, y: avgOf(DATA.countries.map(c => { const a = recFor(c.v, yy); if (!a) return null; const q = calcSection(a, code); return q[code+"_avg"] != null ? {st:{r:q[code+"_red"], am:q[code+"_amber"], g:q[code+"_green"]}} : null; }).filter(Boolean))}));
+  const prLabel = {h:"High", m:"Medium", l:"Low"};
+  return `
+  <p class="note"><b>${esc(secName(s))}</b> · ${its.length} requirements · Suggested respondent in offices: ${esc(s.respondent)}. Use this page to see where the portfolio stands, which offices need support and which requirements need HO action.</p>
+  <div class="kpis">
+    <div class="kpi"><span class="l">Portfolio compliance, ${esc(y)}</span><span class="v">${fp(port)}</span><span class="s"><span class="pill ${ragClass(port)}">${rag(port)}</span>${dport != null ? dArrow(dport) + ` <span class="delta">vs ${py}</span>` : ""}</span></div>
+    <div class="kpi"><span class="l">Offices by status</span><span class="v kv3"><span style="color:var(--red)">${nR}</span><span style="color:var(--amber)">${nA}</span><span style="color:var(--green)">${nG}</span></span><span class="s">red · amber · green, of ${rep.length} reporting</span></div>
+    <div class="kpi"><span class="l">Weakest requirement</span><span class="v" style="font-size:1.25rem">${reqSorted[0].it.id.replace("_","-")}</span><span class="s">${fp(reqSorted[0].avg)} compliance across offices</span></div>
+    <div class="kpi"><span class="l">Offices not yet reporting</span><span class="v">${missing.length + notStarted.length}<small> / ${DATA.countries.length}</small></span><span class="s">${missing.length} started but skipped this section</span></div>
+  </div>
+  <div class="two">
+    <div class="panel"><h2>What to do next</h2><p class="sub">Generated from this year's scores, most urgent first.</p>
+      <ul class="steps">${acts.slice(0, 9).map(x => `<li class="step"><span class="pr ${x.p}">${prLabel[x.p]}</span><div><div class="t">${esc(x.t)}</div><div class="d">${esc(x.d)}</div><div class="act">${esc(x.w)}</div></div></li>`).join("") || `<li class="muted">No actions: every reporting office is green.</li>`}</ul></div>
+    <div class="panel"><h2>Portfolio compliance over time</h2><p class="sub">All reporting offices combined, ${esc(secName(s))}. Background bands: ${THRESH}.</p>${trendPts.length ? lineChart(trendPts) : `<p class="muted">No earlier years yet.</p>`}</div>
+  </div>
+  <div class="two" style="margin-top:16px">
+    <div class="panel"><div class="panel-head"><div><h2>Offices, weakest first</h2><p class="sub">Share of this section's requirements by score, with compliance and change since ${py}.</p></div></div>
+      <div class="hb">${offSorted.map(o => `<div class="hb-row" data-c2="${o.c.v}" title="Open ${esc(o.c.l)}'s country profile"><span class="hb-l">${esc(o.c.l)}${o.status !== "Submitted" ? ` <span class="st">in progress</span>` : ""}</span>${hbar(o.st, o.c.l, o.c.l)}<span class="hb-v"><b class="pill ${ragClass(o.avg)}">${fp(o.avg)}</b>${o.d != null ? dArrow(o.d) : `<span class="delta">new</span>`}</span></div>`).join("")}</div>${legend()}</div>
+    <div class="panel"><div class="panel-head"><div><h2>Requirements, biggest gaps first</h2><p class="sub">How many offices scored each requirement 1, 2 or 3. <span class="tag">no HO doc</span> = no governing document yet.</p></div></div>
+      <div class="hb">${reqSorted.map(r => `<div class="hb-row rqrow"><span class="hb-l" title="${esc(r.it.q)}"><span class="mono">${r.it.id.replace("_","-")}</span> ${esc(r.it.q.length > 58 ? r.it.q.slice(0, 56) + "…" : r.it.q)}${r.it.nogov ? ` <span class="tag">no HO doc</span>` : ""}</span>${hbar(r.sc, r.it.id, r.it.id.replace("_","-"))}<span class="hb-v"><b class="pill ${ragClass(r.avg)}">${fp(r.avg)}</b></span></div>`).join("")}</div>${legend()}</div>
+  </div>
+  <div class="panel" style="margin-top:16px"><h2>Requirement by office</h2><p class="sub">Every score in ${esc(secName(s))} for ${esc(y)}. Rows are requirements (biggest gaps first), columns are offices (weakest first). Hover a cell for details; click an office name for its profile.</p>
+    <div class="hm-scroll"><table class="mx"><thead><tr><th class="rq">Requirement</th>${offSorted.map(o => `<th class="vt" data-c2="${o.c.v}"><span>${esc(o.c.l)}</span></th>`).join("")}<th class="vt"><span>Offices red / amber</span></th></tr></thead>
+    <tbody>${reqSorted.map(r => `<tr><td class="rq" title="${esc(r.it.q)}"><span class="mono">${r.it.id.replace("_","-")}</span> ${esc(r.it.q.length > 70 ? r.it.q.slice(0, 68) + "…" : r.it.q)}</td>${offSorted.map(o => { const v = o.a[r.it.id]; const cls = v === "1" ? "c-r" : v === "2" ? "c-a" : v === "3" ? "c-g" : v === "na" ? "c-n" : "c-x";
+      return `<td class="${cls}" data-tip="${esc(o.c.l)} · ${r.it.id.replace("_","-")}: ${v === "na" ? "N/A" : v ? LABEL[v] : "not answered"}${o.a[r.it.id + "_comment"] ? " — “" + esc(o.a[r.it.id + "_comment"]) + "”" : ""}">${v === "na" ? "–" : v || ""}</td>`; }).join("")}<td class="cnt">${r.sc.r} / ${r.sc.am}</td></tr>`).join("")}</tbody></table></div>
+    ${legend()}</div>`;
+}
+
+function viewTrend(){
+  const c = DASH.country, lab = lbl(DATA.countries, c);
+  const recs = (DASH.data || []).filter(a => a.country === c).sort((x, y) => Number(x.assessment_year) - Number(y.assessment_year));
+  if (!recs.length) return `<div class="panel"><h2>No assessments yet for ${esc(lab)}</h2></div>`;
+  const pts = recs.map(a => ({x:String(a.assessment_year), y:calcTotals(a).overall_avg, a}));
+  const valid = pts.filter(p => p.y != null);
+  let headline = "Only one year of results so far; the trend appears from the second year.";
+  if (valid.length >= 2) { const f = valid[0], l = valid[valid.length - 1], d = l.y - f.y;
+    headline = `<b>${d > 0.1 ? "Improving" : d < -0.1 ? "Declining" : "Stable"}:</b> overall compliance ${fp(f.y)} in ${f.x} → ${fp(l.y)} in ${l.x} (${fpp(d)}).`; }
+  const last2 = valid.slice(-2);
+  const secRows = SECTIONS.map(s => { const vals = pts.map(p => calcSection(p.a, s.code)[s.code+"_avg"]);
+    const a1 = last2.length === 2 ? calcSection(last2[0].a, s.code)[s.code+"_avg"] : null, a2 = last2.length === 2 ? calcSection(last2[1].a, s.code)[s.code+"_avg"] : null, d = (a1 != null && a2 != null) ? a2 - a1 : null;
+    return {s, vals, d}; });
+  const up = secRows.filter(r => r.d != null && r.d > 0.04).length, down = secRows.filter(r => r.d != null && r.d < -0.04).length;
+  return `<p class="note">${headline}${last2.length === 2 ? ` Since ${last2[0].x}: ${up} section${up === 1 ? "" : "s"} improved, ${down} declined.` : ""}</p>
+    <div class="two">
+      <div class="panel"><h2>Overall compliance</h2><p class="sub">${esc(lab)}, by year. Background bands: ${THRESH}.</p>${lineChart(pts)}</div>
+      <div class="panel"><div class="panel-head"><div><h2>Share of scores</h2><p class="sub">Answered requirements by score, each year.</p></div></div>${stackCols(pts.map(p => ({x:p.x, st:{r:calcTotals(p.a).total_red, am:calcTotals(p.a).total_amber, g:calcTotals(p.a).total_green, na:calcTotals(p.a).total_na}})))}${legend()}</div>
+    </div>
+    <div class="panel" style="margin-top:16px"><h2>Section compliance by year</h2><p class="sub">The last column compares the two most recent years.</p>
+      <div class="hm-scroll"><table class="hm tr"><thead><tr><th class="cn">Section</th>${pts.map(p => `<th>${p.x}</th>`).join("")}<th>Change</th></tr></thead>
+      <tbody>${secRows.map(r => `<tr><td class="cname">${esc(secName(r.s))}</td>${r.vals.map((v, i) => `<td class="c-${ragClass(v)}" data-tip="${esc(secName(r.s))}, ${pts[i].x}: ${v != null ? fp(v) + " compliance" : "not answered"}">${fp(v)}</td>`).join("")}<td class="chg">${r.d == null ? "–" : dArrow(r.d)}</td></tr>`).join("")}</tbody></table></div></div>`;
+}
+
+/* ---- tooltip ---- */
+document.addEventListener("mousemove", e => { const t = document.getElementById("tip"), el = e.target.closest && e.target.closest("[data-tip]");
+  if (!el) { t.hidden = true; return; } t.textContent = el.getAttribute("data-tip"); t.hidden = false;
+  const x = Math.min(e.clientX + 14, window.innerWidth - t.offsetWidth - 8), y = e.clientY + 16 + t.offsetHeight > window.innerHeight ? e.clientY - t.offsetHeight - 10 : e.clientY + 16;
+  t.style.left = x + "px"; t.style.top = y + "px"; });
+
+/* ---- switching between form and dashboard ---- */
+function setTabs(){ document.getElementById("tab-form").setAttribute("aria-selected", APP.view === "form"); document.getElementById("tab-dlv").setAttribute("aria-selected", APP.view === "dlv"); document.getElementById("tab-dash").setAttribute("aria-selected", APP.view === "dash"); document.getElementById("savest").style.visibility = APP.view === "dash" ? "hidden" : ""; }
+function showMain(){ setTabs(); if (APP.view === "dash") renderDash(); else if (!APP.oid) renderStart(); else if (APP.view === "dlv") renderDlv(); else renderForm(); window.scrollTo({top:0}); }
+async function switchView(v){ APP.view = v; LS.set("coar-view", v); history.replaceState(null, "", location.pathname + (v === "dash" ? (DASH.mode === "section" ? "#section-" + (DASH.section || SECTIONS[0].code) : DASH.mode === "dlv" ? "#deliverables-dashboard" : "#dashboard") : v === "dlv" ? "#deliverables" : "")); setTabs(); if (!APP.user) return; if (APP.oid) await flush(); showMain(); }
+
+/* ================= BOOT ================= */
+// Links: #dashboard opens the dashboards; #section-FIN (any section code) opens that section's dashboard directly.
+function dashHash(){ LS.set("coar-dash", {mode:DASH.mode, section:DASH.section}); if (APP.view === "dash") history.replaceState(null, "", location.pathname + (DASH.mode === "section" ? "#section-" + (DASH.section || SECTIONS[0].code) : DASH.mode === "dlv" ? "#deliverables-dashboard" : "#dashboard")); }
+(function(){ const h = location.hash.replace("#", ""), m = h.match(/^section-([A-Za-z]+)$/);
+  if (m && SECTIONS.some(s => s.code === m[1].toUpperCase())) { DASH.mode = "section"; DASH.section = m[1].toUpperCase(); LS.set("coar-dash", {mode:"section", section:DASH.section}); APP.view = "dash"; }
+  else if (h === "dashboard") APP.view = "dash";
+  else if (h === "deliverables") APP.view = "dlv";
+  else if (h === "deliverables-dashboard") { APP.view = "dash"; DASH.mode = "dlv"; LS.set("coar-dash", {mode:"dlv"}); }
+  else APP.view = LS.get("coar-view") || "form";
+  const saved = LS.get("coar-dash"); if (!m && saved && APP.view === "dash" && !h) { DASH.mode = saved.mode || DASH.mode; DASH.section = saved.section; }
+})();
+document.getElementById("tab-form").onclick = () => switchView("form");
+document.getElementById("tab-dash").onclick = () => switchView("dash");
+document.getElementById("tab-dlv").onclick = () => switchView("dlv");
+setTabs();
+async function boot(){
+  if (window.COAR_EXPECT_CONFIG && !window.COAR_CONFIG) {
+    $app().innerHTML = `<div class="card"><div><div class="eyebrow">Setup problem</div><h1>The settings file could not be read</h1></div>
+      <p>${window.COAR_CONFIG_MISSING ? "config.js was not found next to this page. Check that a file named exactly <b>config.js</b> (all lowercase, not config (1).js or config.js.txt) is in the same place as index.html on GitHub." : "config.js was found but contains a typing error, so it could not be read. Check that no quote marks, commas or brackets were removed or added, or upload a fresh copy."}</p></div>`;
+    return;
+  }
+  if (DEMO) {
+    document.getElementById("demo-chip").hidden = false;
+    APP.user = {name:"Demo user", email:"", username:"demo"};
+    document.getElementById("who").textContent = "Demo user";
+    showMain(); return;
+  }
+  const q = new URLSearchParams(location.search);
+  if (q.get("code") || q.get("error")) {
+    if (window.opener && window.opener !== window) {        // popup: hand the result to the page inside SharePoint
+      try { window.opener.postMessage({type:"coar-auth", code:q.get("code"), state:q.get("state"), error:q.get("error_description")}, location.origin); } catch(e){}
+      document.body.innerHTML = "<p style='font-family:sans-serif;padding:24px'>Signed in. You can close this window.</p>"; window.close(); return;
+    }
+    history.replaceState(null, "", location.pathname);
+    if (q.get("error")) { renderSignIn(q.get("error_description") || "Sign-in was cancelled."); return; }
+    try { await Auth.exchange(q.get("code"), q.get("state")); } catch(e) { renderSignIn(e.message); return; }
+  }
+  if (!Auth.valid() && !(await Auth.refresh())) { renderSignIn(); return; }
+  await afterSignIn();
+}
+async function afterSignIn(){
+  try {
+    const me = await agsPost(`${CONFIG.PORTAL_URL}/sharing/rest/community/self`, {});
+    APP.user = {name: me.fullName || me.username, email: me.email || "", username: me.username};
+  } catch(e) { renderSignIn(e.message); return; }
+  document.getElementById("who").innerHTML = `${esc(APP.user.name)} · <button class="linkbtn" id="signout">Sign out</button>`;
+  document.getElementById("signout").onclick = async () => { await flush(); Auth.signOut(); };
+  if (APP.oid) flush();
+  showMain();
+}
+window.addEventListener("message", async e => {
+  if (e.origin !== location.origin || !e.data || e.data.type !== "coar-auth") return;
+  if (e.data.error || !e.data.code) { renderSignIn(e.data.error || "Sign-in was cancelled."); return; }
+  try { await Auth.exchange(e.data.code, e.data.state); await afterSignIn(); } catch(err) { renderSignIn(err.message); }
+});
+boot();
+</script>
+
+</body>
+</html>
