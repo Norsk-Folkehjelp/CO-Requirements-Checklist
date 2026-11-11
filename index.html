@@ -270,7 +270,26 @@ table.mx{border-collapse:separate;border-spacing:2px;font-size:.76rem}
 .mx td.ovd{outline:2px solid var(--red);outline-offset:-2px}
 .mx td.c-x.ovd{background:var(--surface)}
 .mx td a{color:inherit;text-decoration:none;display:block}
-.dlx td.rq{min-width:170px}
+.mx th.cc{font-size:.68rem;width:30px;min-width:30px;text-align:center;cursor:pointer;vertical-align:bottom;padding:2px 1px}
+.mx th.cc:hover{color:var(--accent)}
+.dlx td{width:30px;min-width:30px}
+.dlx td.rq,.dlx th.rq{white-space:normal;min-width:320px;max-width:none;width:auto;overflow:visible;line-height:1.35;padding:3px 10px 3px 0}
+.dlx tr.secrow th{text-align:left;font-size:.78rem;color:var(--accent);padding:12px 0 4px;border-bottom:2px solid var(--accent)}
+.dlx td.cnt,.dlx th.cnt{text-align:right;font-size:.75rem;padding:0 0 0 8px;width:auto}
+.dlx td.cf{text-align:center;padding:4px 0 0;font-weight:700;color:var(--fg)}
+.dlx tfoot td{border-top:1px solid var(--line)}
+.dlb{display:grid;gap:6px}
+.dlb-row{display:grid;grid-template-columns:minmax(0,2.4fr) 170px minmax(120px,1fr) 64px 230px;gap:12px;align-items:center;font-size:.82rem}
+.dlb-h{font-size:.72rem;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line);padding-bottom:4px}
+.dlb-l{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dlb-lead{min-width:0;overflow:hidden}.dlb-lead .tag{display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;vertical-align:middle}
+.dlb-due{display:flex;gap:8px;align-items:center;white-space:nowrap}
+.dlb-due .dd{font-size:.8rem}
+@media (max-width:900px){.dlb-row{grid-template-columns:minmax(0,1fr) 64px}.dlb-row .dlb-lead,.dlb-row .dlb-due{grid-column:1/-1}.dlb-row .hb-bar{grid-column:1/-1}.dlb-h{display:none}.dlb-row{border-bottom:1px solid var(--line);padding-bottom:8px}}
+.hb-row.rqfull{grid-template-columns:minmax(0,1fr) minmax(160px,320px) 110px}
+.mxs td{width:30px;min-width:30px}.mxs th.cnt{text-align:right;font-size:.75rem;padding-left:8px}
+.hb-row.rqfull .hb-l{white-space:normal;overflow:visible;line-height:1.35}
+.mx td.rq.wrap{white-space:normal;max-width:560px;min-width:380px;overflow:visible;line-height:1.35;padding:3px 10px 3px 0}
 @media (max-width:720px){.dl-f{grid-template-columns:minmax(0,1fr)}.dl-ch{grid-template-columns:minmax(0,1fr)}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -903,34 +922,41 @@ function renderDlv(){
 }
 
 /* ---- dashboard view: deliverables across all offices ---- */
+const ISO3 = {afghanistan:"AFG", angola:"AGO", bosnia_and_herzegovina:"BIH", cambodia:"KHM", colombia:"COL", ecuador:"ECU", ethiopia:"ETH", iraq:"IRQ", kosovo:"XKX", lao_pdr:"LAO", lebanon:"LBN", mozambique:"MOZ", myanmar:"MMR", palestine:"PSE", peru:"PER", rwanda:"RWA", south_sudan:"SSD", sudan:"SDN", syria:"SYR", thailand:"THA", ukraine:"UKR", vietnam:"VNM", yemen:"YEM", zimbabwe:"ZWE"};
+const iso3 = c => ISO3[c.v] || c.l.replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase();
 function viewDeliverables(){
-  const y = String(DASH.year), now = Date.now();
+  const y = String(DASH.year), N = DATA.countries.length;
   const offices = DATA.countries.map(c => { const a = recFor(c.v, y); return {c, a, n: dlvCounts(a, y)}; });
-  const total = DATA.countries.length * DLV.length;
+  const total = N * DLV.length;
   const yes = offices.reduce((s, o) => s + o.n.yes, 0), part = offices.reduce((s, o) => s + o.n.partially, 0), over = offices.reduce((s, o) => s + o.n.overdue, 0);
   const allDone = offices.filter(o => o.n.yes === DLV.length).length, silent = offices.filter(o => o.n.none === DLV.length).length;
   const per = DLV.map(d => { const st = {r:0, am:0, g:0, na:0, open:0}, od = [];
     offices.forEach(o => { const s = o.a ? o.a[d.id] : null; if (s === "yes") st.g++; else if (s === "partially") st.am++; else if (s === "no") st.r++; else st.open++; if (isOverdue(d, y, s)) od.push(o.c.l); });
-    return {d, st, od, rate: st.g / DATA.countries.length}; }).sort((p, q) => p.rate - q.rate);
+    return {d, st, od, rate: st.g / N}; });
+  const perById = Object.fromEntries(per.map(p => [p.d.id, p]));
   const cell = (o, d) => { const s = o.a ? o.a[d.id] : null, link = o.a ? o.a[d.id + "_link"] : "", ov = isOverdue(d, y, s);
     const cls = s === "yes" ? "c-g" : s === "partially" ? "c-a" : s === "no" ? "c-r" : "c-x", sym = s === "yes" ? "✓" : s === "partially" ? "½" : s === "no" ? "✗" : "";
-    const tip = `${o.c.l} · ${d.t}: ${s ? DLV_LABEL[s] : "not reported"}${ov ? " · overdue" : ""}${o.a && o.a[d.id + "_comment"] ? " — “" + o.a[d.id + "_comment"] + "”" : ""}${isUrl(link) ? " · click to open the document" : ""}`;
+    const tip = `${o.c.l} · ${d.id.replace("_", "-")} ${d.t}: ${s ? DLV_LABEL[s] : "not reported"}${ov ? " · overdue" : ""}${o.a && o.a[d.id + "_comment"] ? " — “" + o.a[d.id + "_comment"] + "”" : ""}${isUrl(link) ? " · click to open the document" : ""}`;
     return `<td class="${cls}${ov ? " ovd" : ""}" data-tip="${esc(tip)}">${isUrl(link) ? `<a href="${esc(link)}" target="_blank" rel="noopener">${sym}</a>` : sym}</td>`; };
+  const dueCell = (p) => `<span class="dd">${esc(p.d.due ? p.d.dueText : "No due date")}</span>${p.od.length ? `<span class="delta down" data-tip="Overdue: ${esc(p.od.join(", "))}">${p.od.length} overdue</span>` : ""}`;
+  const cols = N + 2;
   return `<p class="note">Deliverables reported by each country office for ${esc(y)}. ✓ delivered · ½ partially · ✗ not yet · blank: not reported. A red outline means the due date has passed and the deliverable is not yet delivered. Click a ✓ to open the office's document.</p>
   <div class="kpis">
     <div class="kpi"><span class="l">Delivered across all offices</span><span class="v">${pct(yes, total)}%</span><span class="s">${yes} of ${total} · ${part} partially</span></div>
-    <div class="kpi"><span class="l">Offices with everything delivered</span><span class="v">${allDone}<small> / ${DATA.countries.length}</small></span><span class="s">all ${DLV.length} deliverables marked yes</span></div>
+    <div class="kpi"><span class="l">Offices with everything delivered</span><span class="v">${allDone}<small> / ${N}</small></span><span class="s">all ${DLV.length} deliverables marked yes</span></div>
     <div class="kpi"><span class="l">Overdue</span><span class="v" style="color:${over ? "var(--red)" : "inherit"}">${over}</span><span class="s">past the due date, not delivered</span></div>
-    <div class="kpi"><span class="l">Offices not reporting</span><span class="v">${silent}<small> / ${DATA.countries.length}</small></span><span class="s">no deliverable marked yet</span></div>
+    <div class="kpi"><span class="l">Offices not reporting</span><span class="v">${silent}<small> / ${N}</small></span><span class="s">no deliverable marked yet</span></div>
   </div>
-  <div class="panel"><h2>Deliverables by office, ${esc(y)}</h2><p class="sub">Offices down the side, deliverables across, grouped by section. Hover a cell for details.</p>
+  <div class="panel"><h2>Deliverables by office, ${esc(y)}</h2><p class="sub">Deliverables down the side, grouped by section; country offices across (hover a code for the name, click it for the office's profile).</p>
     <div class="hm-scroll"><table class="mx dlx"><thead>
-      <tr><th class="rq"></th>${DLV_SECS.map(sec => `<th class="grp" colspan="${DLV.filter(d => d.sec === sec).length}">${esc(sec)}</th>`).join("")}<th></th></tr>
-      <tr><th class="rq">Country office</th>${DLV.map(d => `<th class="vt" title="${esc(d.t)}"><span>${esc(d.t.length > 34 ? d.t.slice(0, 32) + "…" : d.t)}</span></th>`).join("")}<th class="vt"><span>Delivered</span></th></tr></thead>
-    <tbody>${offices.map(o => `<tr><td class="rq"><button class="linkbtn" data-c2="${o.c.v}" style="color:inherit;text-decoration:none">${esc(o.c.l)}</button>${!o.a ? ` <span class="st">not started</span>` : ""}</td>${DLV.map(d => cell(o, d)).join("")}<td class="cnt">${o.n.yes} / ${DLV.length}</td></tr>`).join("")}</tbody></table></div>
+      <tr><th class="rq">Deliverable</th>${offices.map(o => `<th class="cc" data-c2="${o.c.v}" data-tip="${esc(o.c.l)}${!o.a ? " · not started" : ""}">${esc(iso3(o.c))}</th>`).join("")}<th class="cnt">Offices<br>delivered</th></tr></thead>
+    <tbody>${DLV_SECS.map(sec => `<tr class="secrow"><th colspan="${cols}">${esc(sec)}</th></tr>` + DLV.filter(d => d.sec === sec).map(d => { const p = perById[d.id];
+      return `<tr><td class="rq"><span class="mono">${d.id.replace("_", "-")}</span> ${esc(d.t)} <span class="tag">${esc(d.lead)}</span>${d.due ? ` <span class="muted dd-in">· ${esc(d.dueText)}</span>` : ""}</td>${offices.map(o => cell(o, d)).join("")}<td class="cnt"><b>${p.st.g}</b> / ${N}</td></tr>`; }).join("")).join("")}
+    </tbody><tfoot><tr><td class="rq muted">Delivered per office</td>${offices.map(o => `<td class="cnt cf" data-tip="${esc(o.c.l)}: ${o.n.yes} of ${DLV.length} delivered">${o.n.yes}</td>`).join("")}<td class="cnt">of ${DLV.length}</td></tr></tfoot></table></div>
     <div class="legend" style="margin-top:8px"><span><i class="dot" style="background:var(--green)"></i>✓ Delivered</span><span><i class="dot" style="background:var(--amber)"></i>½ Partially</span><span><i class="dot" style="background:var(--red)"></i>✗ Not yet</span><span><i class="dot" style="background:var(--empty);outline:1px solid var(--line)"></i>Not reported</span><span><i class="dot" style="background:var(--surface);outline:2px solid var(--red)"></i>Overdue</span></div></div>
-  <div class="panel" style="margin-top:16px"><h2>Deliverables, least delivered first</h2><p class="sub">How many of the ${DATA.countries.length} offices have delivered each one. Use it to follow up with function leads.</p>
-    <div class="hb">${per.map(p => `<div class="hb-row rqrow"><span class="hb-l" title="${esc(p.d.t)}"><span class="mono">${p.d.id.replace("_", "-")}</span> ${esc(p.d.t.length > 54 ? p.d.t.slice(0, 52) + "…" : p.d.t)} <span class="tag">${esc(p.d.lead)}</span></span>${hbar(p.st, p.d.t, p.d.t)}<span class="hb-v"><b class="pill ${p.rate >= .75 ? "g" : p.rate >= .38 ? "a" : "r"}">${p.st.g}/${DATA.countries.length}</b>${p.od.length ? `<span class="delta down" data-tip="Overdue: ${esc(p.od.join(", "))}">${p.od.length} overdue</span>` : `<span class="delta">${esc(p.d.due ? p.d.dueText : "no due date")}</span>`}</span></div>`).join("")}</div>
+  <div class="panel" style="margin-top:16px"><h2>Deliverables, least delivered first</h2><p class="sub">How many of the ${N} offices have delivered each one, with its due date. Use it to follow up with function leads.</p>
+    <div class="dlb"><div class="dlb-row dlb-h"><span>Deliverable</span><span>Lead</span><span>Offices</span><span>Delivered</span><span>Due date</span></div>
+    ${per.slice().sort((p, q) => p.rate - q.rate || q.st.r - p.st.r).map(p => `<div class="dlb-row"><span class="dlb-l" title="${esc(p.d.t)}"><span class="mono">${p.d.id.replace("_", "-")}</span> ${esc(p.d.t)}</span><span class="dlb-lead"><span class="tag">${esc(p.d.lead)}</span></span>${hbar(p.st, p.d.t, p.d.t)}<span><b class="pill ${p.rate >= .75 ? "g" : p.rate >= .38 ? "a" : "r"}">${p.st.g}/${N}</b></span><span class="dlb-due">${dueCell(p)}</span></div>`).join("")}</div>
     <div class="legend" style="margin-top:8px"><span><i class="dot" style="background:var(--green)"></i>Delivered</span><span><i class="dot" style="background:var(--amber)"></i>Partially</span><span><i class="dot" style="background:var(--red)"></i>Not yet</span><span><i class="dot" style="background:var(--empty);outline:1px solid var(--line)"></i>Not reported</span></div></div>`;
 }
 
@@ -1081,15 +1107,17 @@ function viewSection(){
       <ul class="steps">${acts.slice(0, 9).map(x => `<li class="step"><span class="pr ${x.p}">${prLabel[x.p]}</span><div><div class="t">${esc(x.t)}</div><div class="d">${esc(x.d)}</div><div class="act">${esc(x.w)}</div></div></li>`).join("") || `<li class="muted">No actions: every reporting office is green.</li>`}</ul></div>
     <div class="panel"><h2>Portfolio compliance over time</h2><p class="sub">All reporting offices combined, ${esc(secName(s))}. Background bands: ${THRESH}.</p>${trendPts.length ? lineChart(trendPts) : `<p class="muted">No earlier years yet.</p>`}</div>
   </div>
-  <div class="two" style="margin-top:16px">
+  <div style="margin-top:16px">
     <div class="panel"><div class="panel-head"><div><h2>Offices, weakest first</h2><p class="sub">Share of this section's requirements by score, with compliance and change since ${py}.</p></div></div>
       <div class="hb">${offSorted.map(o => `<div class="hb-row" data-c2="${o.c.v}" title="Open ${esc(o.c.l)}'s country profile"><span class="hb-l">${esc(o.c.l)}${o.status !== "Submitted" ? ` <span class="st">in progress</span>` : ""}</span>${hbar(o.st, o.c.l, o.c.l)}<span class="hb-v"><b class="pill ${ragClass(o.avg)}">${fp(o.avg)}</b>${o.d != null ? dArrow(o.d) : `<span class="delta">new</span>`}</span></div>`).join("")}</div>${legend()}</div>
+  </div>
+  <div style="margin-top:16px">
     <div class="panel"><div class="panel-head"><div><h2>Requirements, biggest gaps first</h2><p class="sub">How many offices scored each requirement 1, 2 or 3. <span class="tag">no HO doc</span> = no governing document yet.</p></div></div>
-      <div class="hb">${reqSorted.map(r => `<div class="hb-row rqrow"><span class="hb-l" title="${esc(r.it.q)}"><span class="mono">${r.it.id.replace("_","-")}</span> ${esc(r.it.q.length > 58 ? r.it.q.slice(0, 56) + "…" : r.it.q)}${r.it.nogov ? ` <span class="tag">no HO doc</span>` : ""}</span>${hbar(r.sc, r.it.id, r.it.id.replace("_","-"))}<span class="hb-v"><b class="pill ${ragClass(r.avg)}">${fp(r.avg)}</b></span></div>`).join("")}</div>${legend()}</div>
+      <div class="hb">${reqSorted.map(r => `<div class="hb-row rqfull"><span class="hb-l"><span class="mono">${r.it.id.replace("_","-")}</span> ${esc(r.it.q)}${r.it.nogov ? ` <span class="tag">no HO doc</span>` : ""}</span>${hbar(r.sc, r.it.id, r.it.id.replace("_","-"))}<span class="hb-v"><b class="pill ${ragClass(r.avg)}">${fp(r.avg)}</b></span></div>`).join("")}</div>${legend()}</div>
   </div>
   <div class="panel" style="margin-top:16px"><h2>Requirement by office</h2><p class="sub">Every score in ${esc(secName(s))} for ${esc(y)}. Rows are requirements (biggest gaps first), columns are offices (weakest first). Hover a cell for details; click an office name for its profile.</p>
-    <div class="hm-scroll"><table class="mx"><thead><tr><th class="rq">Requirement</th>${offSorted.map(o => `<th class="vt" data-c2="${o.c.v}"><span>${esc(o.c.l)}</span></th>`).join("")}<th class="vt"><span>Offices red / amber</span></th></tr></thead>
-    <tbody>${reqSorted.map(r => `<tr><td class="rq" title="${esc(r.it.q)}"><span class="mono">${r.it.id.replace("_","-")}</span> ${esc(r.it.q.length > 70 ? r.it.q.slice(0, 68) + "…" : r.it.q)}</td>${offSorted.map(o => { const v = o.a[r.it.id]; const cls = v === "1" ? "c-r" : v === "2" ? "c-a" : v === "3" ? "c-g" : v === "na" ? "c-n" : "c-x";
+    <div class="hm-scroll"><table class="mx mxs"><thead><tr><th class="rq">Requirement</th>${offSorted.map(o => `<th class="cc" data-c2="${o.c.v}" data-tip="${esc(o.c.l)}">${esc(iso3(o.c))}</th>`).join("")}<th class="cnt">Offices<br>red / amber</th></tr></thead>
+    <tbody>${reqSorted.map(r => `<tr><td class="rq wrap"><span class="mono">${r.it.id.replace("_","-")}</span> ${esc(r.it.q)}</td>${offSorted.map(o => { const v = o.a[r.it.id]; const cls = v === "1" ? "c-r" : v === "2" ? "c-a" : v === "3" ? "c-g" : v === "na" ? "c-n" : "c-x";
       return `<td class="${cls}" data-tip="${esc(o.c.l)} · ${r.it.id.replace("_","-")}: ${v === "na" ? "N/A" : v ? LABEL[v] : "not answered"}${o.a[r.it.id + "_comment"] ? " — “" + esc(o.a[r.it.id + "_comment"]) + "”" : ""}">${v === "na" ? "–" : v || ""}</td>`; }).join("")}<td class="cnt">${r.sc.r} / ${r.sc.am}</td></tr>`).join("")}</tbody></table></div>
     ${legend()}</div>`;
 }
