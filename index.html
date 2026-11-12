@@ -257,14 +257,15 @@ table.mx{border-collapse:separate;border-spacing:2px;font-size:.76rem}
 }
 /* guidelines */
 @media (max-width:620px){.vtabs{flex-wrap:wrap;max-width:100%}.vtabs button{padding:6px 7px;font-size:.74rem}}
-.gd-hero{gap:6px}.gd-lead{margin:0;font-size:1.02rem;max-width:72ch}
+.gd-hero{gap:6px}.gd-lead{margin:0;font-size:1.02rem}
 .gd-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .gd-card{display:grid;gap:10px;align-content:start;border-top:4px solid var(--accent);position:relative}
 .gd-card h3{font-size:1.02rem;padding-right:36px}.gd-card p{margin:0;font-size:.88rem}.gd-card .btn{justify-self:start;margin-top:4px;text-decoration:none}
 .gd-n{position:absolute;top:12px;right:14px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:.85rem}
 .gd-text{font-size:.9rem}.gd-text h2{margin-bottom:8px}.gd-text ul,.gd-text ol{margin:0 0 8px;padding-left:20px;display:grid;gap:6px}.gd-text p{margin:8px 0 0}
 .gd-secs{columns:2;display:block!important}.gd-secs li{margin-bottom:3px}
-.gd-note{margin-top:16px;line-height:1.5}
+.gd-main{margin-top:16px;line-height:1.55}.gd-main h2{margin:18px 0 6px}.gd-main h2:first-child{margin-top:0}.gd-main p{max-width:none}
+.gd-hero ul{margin:0;padding-left:20px;display:grid;gap:6px}
 .gd-roles{width:100%;border-collapse:collapse;font-size:.88rem;margin-top:8px}
 .gd-roles th{text-align:left;background:var(--accent);color:#fff;padding:8px 10px;font-weight:600}
 .gd-roles td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -988,40 +989,35 @@ function renderGuide(){
     ["IT Department", "Develop and maintain a suitable IT platform for the Country Office Checklist."],
     ["Administrator", "Maintain the checklists, ensure they function well, update broken links, and flag any user experience issues."]];
   $app().innerHTML = `
-  <div class="hero gd-hero">
+  <div class="hero gd-hero gd-text">
     <div><div class="eyebrow">Guidelines</div><h1>Country Office Compliance Toolkit</h1></div>
-    <p class="gd-lead">The toolkit gives country offices an overview of their compliance with all mandatory requirements set out in NPA policies, procedures and regulations.</p>
+    <p class="gd-lead"><b>Purpose:</b> the toolkit gives country offices an overview of their compliance with all mandatory requirements set out in NPA policies, procedures and regulations. It enables:</p>
+    <ul>
+      <li>Country Directors and key programme staff to have an overview of key NPA mandatory requirements for their programmes, with deadlines where applicable.</li>
+      <li>The International Department to follow up on country programmes' compliance with mandatory requirements.</li>
+      <li>Function leads and specialists to have an overview of how the policies they are responsible for are implemented, to support more in-depth reviews and assessments if required.</li>
+      <li>Country offices to reduce risk in their work by improving compliance with internal and external regulations. The toolkit should not be confused with NPA's risk management system.</li></ul>
   </div>
   <h2 class="dl-sec">Three components</h2>
   <div class="gd-cards">
-    <div class="panel gd-card"><span class="gd-n">1</span><h3>Key Documents in NPA</h3><p>The SharePoint QMS library with links to all policies, procedures, handbooks, templates and other relevant documents. <b>All Country Directors must read and be familiar with these documents.</b></p><a class="btn" href="${KEYDOCS}" target="_blank" rel="noopener">Open Key Documents</a></div>
+    <div class="panel gd-card"><span class="gd-n">1</span><h3>Key Documents in NPA</h3><p>The SharePoint QMS library with links to all policies, procedures, handbooks, templates and other relevant documents. <b>All Country Directors must read and be familiar with these documents.</b></p><a class="btn pri" href="${KEYDOCS}" target="_blank" rel="noopener">Open Key Documents</a></div>
     <div class="panel gd-card"><span class="gd-n">2</span><h3>Annual Requirements Checklist</h3><p>Key mandatory requirements for country offices, reviewed by the office's Senior Management Team (SMT) once a year. <b>Complete it by 1 June each year.</b></p><button class="btn pri" data-go="form">Open the checklist</button></div>
     <div class="panel gd-card"><span class="gd-n">3</span><h3>Deliverables Tracker</h3><p>All time-bound deliverables that country offices must submit to Head Office (not donor proposals and reports), with deadlines.</p><button class="btn pri" data-go="dlv">Open the deliverables</button></div>
   </div>
-  <div class="two" style="margin-top:16px">
-    <div class="panel gd-text"><h2>What the toolkit enables</h2><ul>
-      <li>Country Directors and key programme staff get an overview of key NPA mandatory requirements for their programmes, with deadlines where applicable.</li>
-      <li>The International Department can follow up on country programmes' compliance with mandatory requirements.</li>
-      <li>Function leads and specialists get an overview of how the policies they are responsible for are implemented, to support more in-depth reviews and assessments if required.</li>
-      <li>Country offices can reduce risk in their work by improving compliance with internal and external regulations. The toolkit should not be confused with NPA's risk management system.</li></ul></div>
-    <div class="panel gd-text"><h2>What the toolkit covers</h2><ul>
+  <div class="panel gd-text gd-main">
+    <h2>What the toolkit covers</h2><ul>
       <li>Strategic requirements, including country strategy, fundraising plan and donor mapping.</li>
       <li>Key governance and legal requirements (for example country registration, accreditation for mine action programmes).</li>
       <li>Specific actions required to fulfil policy requirements (for example the Gender and Diversity Action Plan under NPA's Gender and Diversity policy, the Green Office Tool).</li>
       <li>Specific actions required to fulfil NPA procedures (for example those in the finance and logistics handbooks).</li>
       <li>Key country office programmatic deliverables, for example a Rapid Intersectional Gender Analysis.</li></ul>
-      <p class="muted">The toolkit replaces earlier processes and tools, including the former Department for Mine Action and Disarmament Programme Performance Indicators, the DHC quarterly reports and the self-assessment "identification of risk areas" checklist.</p></div>
-  </div>
-  <div class="note warn gd-note"><b>What "compliance" means here.</b> To comply with key policies, procedures, rules and regulations. The toolkit does not monitor implementation or measure the quality of how country offices fulfil or deliver the items; that is followed up in other ways (for example by the Regional Director or the relevant HO department or unit). Programme results and performance are not included; they are covered by other MEAL processes and systems. The checklists are not a complete list of requirements and do not relieve staff of their responsibility to know and comply with all relevant policies and procedures.</div>
-  <div class="two" style="margin-top:16px">
-    <div class="panel gd-text"><h2>Annual Requirements Checklist</h2>
-      <p>Completed by the country office Senior Management Team <b>by 1 June every year</b>. It has ${SECTIONS.length} sections:</p>
-      <ol class="gd-secs">${SECTIONS.map(x => `<li>${esc(x.name)}</li>`).join("")}</ol>
-      <p><b>How to score.</b> For each requirement choose <span class="pill r">1</span> not in compliance, <span class="pill a">2</span> partially, <span class="pill g">3</span> fully in compliance, or N/A if it does not apply. Add a comment or a link to evidence where useful. Answers save automatically; several colleagues can each complete their own sections. The Country Director submits the checklist when all sections are done.</p></div>
-    <div class="panel gd-text"><h2>Deliverables Tracker</h2>
-      <p>An overview of all time-bound deliverables required of country offices, with their deadlines, grouped by section (strategy, annual plan, analysis and assessment, status review, document and tool updates).</p>
-      <p>The <b>Country Director</b> updates the status of each deliverable when appropriate (Yes, Partially or No) and <b>adds a link to the relevant document</b>, so Head Office can open it. Deliverables can be updated at any time of the year, also after the checklist is submitted.</p>
-      <p>Head Office sees the status of each deliverable across all country offices under <b>Dashboards › Deliverables</b>.</p></div>
+    <p>The toolkit replaces earlier processes and tools, including the former Department for Mine Action and Disarmament Programme Performance Indicators, the DHC quarterly reports and the self-assessment "identification of risk areas" checklist.</p>
+    <h2>What "compliance" means</h2>
+    <p>Compliance means to comply with key policies, procedures, rules and regulations. The toolkit does not monitor implementation or measure the quality of how country offices fulfil or deliver the items; that is followed up in other ways (for example by the Regional Director or the relevant HO department or unit). Programme results and performance are not included; they are covered by other MEAL processes and systems. The checklists are not a complete list of requirements and do not relieve staff of their responsibility to know and comply with all relevant policies and procedures.</p>
+    <h2>Annual Requirements Checklist</h2>
+    <p>Completed by the country office Senior Management Team <b>by 1 June every year</b>. For each requirement choose <span class="pill r">1</span> not in compliance, <span class="pill a">2</span> partially, <span class="pill g">3</span> fully in compliance, or N/A if it does not apply. Add a comment or a link to evidence where useful. Answers save automatically; several colleagues can each complete their own sections. The Country Director submits the checklist when all sections are done.</p>
+    <h2>Deliverables Tracker</h2>
+    <p>An overview of all time-bound deliverables required of country offices, with their deadlines. The <b>Country Director</b> updates the status of each deliverable when appropriate (Yes, Partially or No) and <b>adds a link to the relevant document</b>, so Head Office can open it. Deliverables can be updated at any time of the year, also after the checklist is submitted. Head Office sees the status across all country offices under <b>Dashboards › Deliverables</b>.</p>
   </div>
   <div class="panel" style="margin-top:16px"><h2>Roles and responsibilities</h2>
     <table class="gd-roles"><thead><tr><th>Position</th><th>Role and responsibility</th></tr></thead>
