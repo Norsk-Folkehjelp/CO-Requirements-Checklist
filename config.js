@@ -6,13 +6,13 @@ window.COAR_CONFIG = {
   CLIENT_ID: "bAZAOXg4cHYFnbl2",
 
   // Main layer (HO reviewers only): used for the Dashboards
-  LAYER_URL: "https://services1.arcgis.com/9pLtiug18wgR3gBR/arcgis/rest/services/service_2c7fd757382242499e06d9f86bb7d572/FeatureServer/0",
+  LAYER_URL: "https://services1.arcgis.com/9pLtiug18wgR3gBR/arcgis/rest/services/service_66dd1823df094915b3dcf7e24d0e7bd1/FeatureServer/0",
 
   // One view per country office (filtered to that country, shared with its group).
   // Paste each view's address when you create it; empty = that office uses the main layer.
   COUNTRY_LAYER_URLS: {
-    afghanistan:            "https://services1.arcgis.com/9pLtiug18wgR3gBR/arcgis/rest/services/COAR_Afghanistan/FeatureServer/0",
-    angola:                 "https://services1.arcgis.com/9pLtiug18wgR3gBR/arcgis/rest/services/COAR_Angola/FeatureServer/0",
+    afghanistan:            "https://services1.arcgis.com/9pLtiug18wgR3gBR/arcgis/rest/services/COAR_%E2%80%93_Afghanistan/FeatureServer/0",
+    angola:                 "https://services1.arcgis.com/9pLtiug18wgR3gBR/arcgis/rest/services/COAR_%E2%80%93_Angola/FeatureServer/0",
     bosnia_and_herzegovina: "",
     cambodia:               "",
     colombia:               "",
@@ -20,7 +20,7 @@ window.COAR_CONFIG = {
     ethiopia:               "",
     iraq:                   "",
     kosovo:                 "",
-    lao_pdr:                "https://services1.arcgis.com/9pLtiug18wgR3gBR/arcgis/rest/services/COAR_Lao_PDR/FeatureServer/0",
+    lao_pdr:                "https://services1.arcgis.com/9pLtiug18wgR3gBR/arcgis/rest/services/COAR_%E2%80%93_Lao_PDR/FeatureServer/0",
     lebanon:                "",
     mozambique:             "",
     myanmar:                "",
